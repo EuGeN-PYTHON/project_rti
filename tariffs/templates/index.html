@@ -36,12 +36,14 @@
           </button>
           <div class="dropdown-content">
             {% if current_region %}
-              <a href="http://127.0.0.1:8000">Все регионы</a>
+              <a href="http://127.0.0.1:8000" class="dropdown-item">
+                <i class="fas fa-globe"></i> Все регионы
+              </a>
             {% endif %}
             {% for region in regions %}
               {% if region.subdomain and region != current_region %}
-                <a href="http://{{ region.subdomain }}.localhost:8000">
-                  {{ region.name }}
+                <a href="http://127.0.0.1:8000?region={{ region.id }}" class="dropdown-item">
+                  <i class="fas fa-city"></i> {{ region.name }}
                 </a>
               {% endif %}
             {% endfor %}

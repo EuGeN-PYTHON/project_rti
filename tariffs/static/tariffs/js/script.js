@@ -5,6 +5,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('lead-form');
     const status = document.getElementById('lead-status');
     const phoneInput = document.getElementById('phone');
+    const regionDropdown = document.querySelector('.region-dropdown');
+    const dropdownContent = document.querySelector('.dropdown-content');
+
+    // Настройка dropdown
+    function setupDropdown() {
+        if (!regionDropdown || !dropdownContent) return;
+
+        let dropdownTimeout;
+
+        regionDropdown.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+            dropdownContent.style.display = 'block';
+            setTimeout(() => {
+                dropdownContent.style.opacity = '1';
+                dropdownContent.style.transform = 'translateY(0)';
+            }, 10);
+        });
+
+        regionDropdown.addEventListener('mouseleave', function() {
+            dropdownTimeout = setTimeout(() => {
+                dropdownContent.style.opacity = '0';
+                dropdownContent.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    dropdownContent.style.display = 'none';
+                }, 300);
+            }, 300);
+        });
+
+        dropdownContent.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+        });
+
+        dropdownContent.addEventListener('mouseleave', function() {
+            dropdownContent.style.opacity = '0';
+            dropdownContent.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                dropdownContent.style.display = 'none';
+            }, 300);
+        });
+    }
 
     // Маска для телефона
     phoneInput.addEventListener('input', function(e) {
@@ -51,14 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
             card.style.display = matchesSpeed ? "block" : "none";
         });
     }
-
-    // Обработчик для переключения регионов через dropdown
-    document.querySelectorAll('.dropdown-content a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href = this.href;
-        });
-    });
 
     // Автозаполнение тарифа при клике на кнопку
     document.querySelectorAll('.tariff-card .btn').forEach(btn => {
@@ -163,5 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Инициализация
+    setupDropdown();
     updateRegionUI();
 });

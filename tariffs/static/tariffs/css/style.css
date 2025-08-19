@@ -102,7 +102,7 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--rt-white);
@@ -135,6 +135,7 @@ header {
     letter-spacing: 0.5px;
 }
 
+/* Region Selector - FIXED DROPDOWN */
 .region-selector {
     display: flex;
     align-items: center;
@@ -150,6 +151,8 @@ header {
 
 .region-dropdown {
     position: relative;
+    display: inline-block;
+    z-index: 1002;
 }
 
 .dropdown-btn {
@@ -158,6 +161,9 @@ header {
     color: var(--rt-white);
     cursor: pointer;
     padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dropdown-content {
@@ -166,28 +172,49 @@ header {
     top: 100%;
     right: 0;
     background: var(--rt-white);
-    min-width: 200px;
+    min-width: 220px;
     box-shadow: var(--shadow);
     border-radius: var(--border-radius);
-    z-index: 1000;
+    z-index: 1003;
     margin-top: 0.5rem;
-}
-
-.dropdown-content a {
-    display: block;
-    padding: 1rem;
-    color: var(--text-dark);
-    text-decoration: none;
-    border-bottom: 1px solid #eee;
-    font-weight: 400;
-}
-
-.dropdown-content a:hover {
-    background: var(--rt-lavender);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .region-dropdown:hover .dropdown-content {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    font-weight: 400;
+}
+
+.dropdown-item:hover {
+    background: var(--rt-lavender);
+    color: var(--rt-purple);
+    transform: translateX(5px);
+}
+
+.dropdown-item i {
+    width: 16px;
+    color: var(--rt-purple);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
 }
 
 /* Hero Section */
@@ -534,6 +561,7 @@ header {
     border-color: var(--rt-purple);
     box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
 }
+
 /* Footer */
 footer {
     background: var(--rt-purple);
@@ -653,45 +681,6 @@ footer {
     text-transform: uppercase;
 }
 
-/* Responsive для footer */
-@media (max-width: 768px) {
-    .footer-content {
-        text-align: center;
-        gap: 2rem;
-    }
-
-    .footer-logo .logo {
-        justify-content: center;
-        text-align: center;
-    }
-
-    .footer-logo .rt-logo {
-        margin: 0 auto 0.5rem;
-    }
-
-    .footer-logo .site-name {
-        display: block;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .footer-logo .dealer-badge {
-        margin-left: 0;
-    }
-
-    .contact-info {
-        text-align: center;
-    }
-
-    .contact-info li {
-        justify-content: center;
-    }
-
-    .social-links {
-        justify-content: center;
-    }
-}
-
 /* Animations */
 @keyframes fadeInUp {
     from {
@@ -704,8 +693,23 @@ footer {
     }
 }
 
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .fade-in {
     animation: fadeInUp 0.6s ease both;
+}
+
+.region-dropdown:hover .dropdown-content {
+    animation: dropdownFadeIn 0.3s ease forwards;
 }
 
 /* Loading states */
@@ -788,6 +792,42 @@ footer {
 
     .section-title {
         font-size: 1.8rem;
+    }
+
+    .footer-content {
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .footer-logo .logo {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .footer-logo .rt-logo {
+        margin: 0 auto 0.5rem;
+    }
+
+    .footer-logo .site-name {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-logo .dealer-badge {
+        margin-left: 0;
+    }
+
+    .contact-info {
+        text-align: center;
+    }
+
+    .contact-info li {
+        justify-content: center;
+    }
+
+    .social-links {
+        justify-content: center;
     }
 }
 
