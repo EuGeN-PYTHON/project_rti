@@ -1,158 +1,779 @@
-<!-- tariffs/templates/index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RT Интернет</title>
+  <title>RT Интернет - Высокоскоростной интернет для каждого</title>
+  <meta name="description" content="Подключите высокоскоростной интернет от RT Интернет. Лучшие тарифы для дома и бизнеса.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {margin:0;font-family:"Segoe UI",sans-serif;background:#f9fafb;color:#333;}
-    header {background:#023e8a;color:#fff;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-    header h1 {margin:0;font-size:1.5rem;}
-    header select {padding:0.4rem 0.6rem;border-radius:6px;border:none;font-size:1rem;}
-    section.tariffs {padding:2rem;}
-    section.tariffs h2 {text-align:center;font-size:2rem;margin-bottom:1.5rem;}
-    .tariff-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;}
-    .tariff-card {background:#fff;border-radius:16px;box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:1.5rem;text-align:center;transition:transform 0.3s;}
-    .tariff-card:hover {transform:translateY(-4px);}
-    .tariff-card h3 {margin:0 0 0.5rem;font-size:1.3rem;color:#023e8a;}
-    .tariff-card .speed {color:#555;font-size:0.95rem;}
-    .tariff-card .price {font-size:1.2rem;font-weight:600;margin:1rem 0;}
-    .tariff-card .btn {display:inline-block;background:#0096c7;color:#fff;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:500;transition:0.3s;}
-    .tariff-card .btn:hover {background:#0077b6;}
-    #connect-form {padding:2rem;background:#f1f5f9;}
-    #connect-form h2 {text-align:center;margin-bottom:1rem;}
-    .lead-card {max-width:480px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,0.12);padding:2rem;text-align:center;transition:0.3s;}
-    .lead-card:hover {transform:translateY(-4px);}
-    .lead-card svg {width:48px;height:48px;margin-bottom:1rem;fill:#0096c7;}
-    .lead-card input,.lead-card select {width:100%;padding:0.8rem;margin:0.5rem 0;border:1px solid #ccc;border-radius:8px;}
-    .lead-card button {background:#0096c7;color:#fff;border:none;padding:0.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;transition:0.3s;}
-    .lead-card button:hover {background:#0077b6;}
-    #lead-status {margin-top:1rem;font-weight:500;}
-    footer {background:#023e8a;color:#fff;padding:1rem;text-align:center;margin-top:2rem;}
+    :root {
+      --primary: #023e8a;
+      --secondary: #0096c7;
+      --accent: #0077b6;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #28a745;
+      --danger: #dc3545;
+      --border-radius: 12px;
+      --shadow: 0 6px 16px rgba(0,0,0,0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f9fafb 0%, #e9ecef 100%);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Header */
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .logo i {
+      color: #00b4d8;
+    }
+
+    .region-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    select {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: var(--border-radius);
+      background: white;
+      color: var(--dark);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    select:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    /* Features */
+    .features {
+      padding: 3rem 0;
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      background: var(--light);
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    /* Tariffs */
+    .tariffs {
+      padding: 3rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 2rem;
+      color: var(--primary);
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.6rem 1.5rem;
+      border: 2px solid var(--secondary);
+      background: transparent;
+      color: var(--secondary);
+      border-radius: 25px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .tariff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .tariff-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tariff-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: 1rem;
+      right: -2rem;
+      background: var(--success);
+      color: white;
+      padding: 0.3rem 2rem;
+      transform: rotate(45deg);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .tariff-card h3 {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .speed {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin: 1rem 0;
+    }
+
+    .price-period {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: normal;
+    }
+
+    .features-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .features-list li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .features-list li:last-child {
+      border-bottom: none;
+    }
+
+    .features-list i {
+      color: var(--success);
+      margin-right: 0.5rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--secondary);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Connect Form */
+    #connect-form {
+      padding: 4rem 0;
+      background: var(--light);
+    }
+
+    .lead-card {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e9ecef;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(0,150,199,0.1);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      text-align: left;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 1rem;
+      color: #00b4d8;
+    }
+
+    .contact-info {
+      list-style: none;
+    }
+
+    .contact-info li {
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-info i {
+      width: 20px;
+      margin-right: 0.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      color: #00b4d8;
+    }
+
+    .copyright {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero h2 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .tariff-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filter-btn {
+        width: 200px;
+      }
+    }
+
+    /* Loading states */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .success-message {
+      background: var(--success);
+      color: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .error-message {
+      background: var(--danger);
+      color: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>RT Интернет</h1>
-  <div>
-    <label for="region-select">Регион:</label>
-    <select id="region-select">
-      <option value="">Все регионы</option>
-      {% for region in regions %}
-        <option value="{{ region.id }}">{{ region.name }}</option>
-      {% endfor %}
-    </select>
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-wifi"></i>
+        <span>RT Интернет</span>
+      </div>
+      <div class="region-selector">
+        <i class="fas fa-map-marker-alt"></i>
+        <select id="region-select">
+          <option value="">Все регионы</option>
+          {% for region in regions %}
+            <option value="{{ region.id }}">{{ region.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
   </div>
 </header>
 
-<section class="tariffs">
-  <h2>Наши тарифы</h2>
-  <div id="tariff-grid" class="tariff-grid">
-    {% for tariff in tariffs %}
-      <div class="tariff-card" data-region="{{ tariff.region.id }}">
-        <h3>{{ tariff.name }}</h3>
-        {% if tariff.speed %}<p class="speed">Скорость: {{ tariff.speed }}</p>{% endif %}
-        <p class="price">{{ tariff.price }} ₽/мес</p>
-        <a href="#connect-form" class="btn">Подключить</a>
+<section class="hero">
+  <div class="container">
+    <h2>Высокоскоростной интернет для вашего дома</h2>
+    <p>Подключите один из наших тарифов и получите стабильный интернет с бесплатной установкой</p>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2 class="section-title">Почему выбирают нас</h2>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <i class="fas fa-bolt"></i>
+        <h3>Высокая скорость</h3>
+        <p>До 1 Гбит/с без ограничений и throttling</p>
       </div>
-    {% endfor %}
+      <div class="feature-card fade-in">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Надежность</h3>
+        <p>99.9% uptime и круглосуточная поддержка</p>
+      </div>
+      <div class="feature-card fade-in">
+        <i class="fas fa-tools"></i>
+        <h3>Бесплатная установка</h3>
+        <p>Профессиональный монтаж и настройка оборудования</p>
+      </div>
+      <div class="feature-card fade-in">
+        <i class="fas fa-headset"></i>
+        <h3>Поддержка 24/7</h3>
+        <p>Техническая поддержка работает круглосуточно</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tariffs">
+  <div class="container">
+    <h2 class="section-title">Наши тарифы</h2>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-speed="">Все тарифы</button>
+      <button class="filter-btn" data-speed="100">До 100 Мбит/с</button>
+      <button class="filter-btn" data-speed="300">До 300 Мбит/с</button>
+      <button class="filter-btn" data-speed="500">Выше 500 Мбит/с</button>
+    </div>
+
+    <div id="tariff-grid" class="tariff-grid">
+      {% for tariff in tariffs %}
+        <div class="tariff-card fade-in" data-region="{{ tariff.region.id }}" data-speed="{{ tariff.speed|default:'0'|cut:'Мбит/с'|cut:' ' }}">
+          {% if forloop.first %}<div class="popular-badge">ПОПУЛЯРНЫЙ</div>{% endif %}
+          <h3>{{ tariff.name }}</h3>
+          {% if tariff.speed %}<p class="speed"><i class="fas fa-tachometer-alt"></i> {{ tariff.speed }}</p>{% endif %}
+          <div class="price">{{ tariff.price }} <span class="price-period">₽/мес</span></div>
+
+          <ul class="features-list">
+            <li><i class="fas fa-check"></i> Безлимитный интернет</li>
+            <li><i class="fas fa-check"></i> Бесплатное подключение</li>
+            <li><i class="fas fa-check"></i> Аренда оборудования</li>
+            <li><i class="fas fa-check"></i> Техподдержка 24/7</li>
+          </ul>
+
+          <a href="#connect-form" class="btn" data-tariff="{{ tariff.id }}">
+            <i class="fas fa-plug"></i> Подключить
+          </a>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 </section>
 
 <section id="connect-form">
-  <h2>Оставить заявку</h2>
-  <div class="lead-card">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
-    <form id="lead-form" action="{% url 'create_lead' %}" method="post">
-      {% csrf_token %}
-      <label for="fio">ФИО</label>
-      <input type="text" id="fio" name="fio" placeholder="Иванов Иван Иванович" required>
-      <label for="phone">Телефон</label>
-      <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
-      <label for="address">Адрес подключения</label>
-      <input type="text" id="address" name="address" placeholder="Введите адрес" required>
-      <select name="tariff" id="tariff-select">
-        <option value="">Выберите тариф</option>
-        {% for tariff in tariffs %}
-          <option value="{{ tariff.id }}" data-region="{{ tariff.region.id }}">{{ tariff.name }} - {{ tariff.price }} ₽</option>
-        {% endfor %}
-      </select>
-      <input type="hidden" name="region" id="region-input">
-      <button type="submit">Отправить заявку</button>
-      <div id="lead-status"></div>
-    </form>
+  <div class="container">
+    <h2 class="section-title">Оставить заявку</h2>
+    <div class="lead-card fade-in">
+      <form id="lead-form" action="{% url 'create_lead' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="fio"><i class="fas fa-user"></i> ФИО</label>
+          <input type="text" id="fio" name="fio" placeholder="Иванов Иван Иванович" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone"><i class="fas fa-phone"></i> Телефон</label>
+          <input type="tel" id="phone" name="phone" placeholder="+7 (999) 999-99-99" required>
+        </div>
+
+        <div class="form-group">
+          <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес подключения</label>
+          <input type="text" id="address" name="address" placeholder="ул. Примерная, д. 1, кв. 1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="tariff-select"><i class="fas fa-wifi"></i> Выберите тариф</label>
+          <select name="tariff" id="tariff-select" required>
+            <option value="">Выберите тариф</option>
+            {% for tariff in tariffs %}
+              <option value="{{ tariff.id }}" data-region="{{ tariff.region.id }}">
+                {{ tariff.name }} - {{ tariff.speed }} - {{ tariff.price }} ₽/мес
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <input type="hidden" name="region" id="region-input">
+
+        <button type="submit" class="btn">
+          <i class="fas fa-paper-plane"></i> Отправить заявку
+        </button>
+
+        <div id="lead-status"></div>
+      </form>
+    </div>
   </div>
 </section>
 
 <footer>
-  <p>© 2025 RT Интернет</p>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>RT Интернет</h4>
+        <p>Предоставляем качественные интернет-услуги с 2015 года. Более 50 000 довольных клиентов по всей стране.</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Контакты</h4>
+        <ul class="contact-info">
+          <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
+          <li><i class="fas fa-envelope"></i> info@rt-internet.ru</li>
+          <li><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Примерная, 1</li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Мы в соцсетях</h4>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-vk"></i></a>
+          <a href="#"><i class="fab fa-telegram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025 RT Интернет. Все права защищены.</p>
+    </div>
+  </div>
 </footer>
 
 <script>
-  const regionSelect = document.getElementById("region-select");
-  const tariffCards = document.querySelectorAll(".tariff-card");
-  const tariffOptions = document.querySelectorAll("#tariff-select option");
+  // Полная JavaScript реализация с улучшениями
+  document.addEventListener('DOMContentLoaded', function() {
+    // Элементы DOM
+    const regionSelect = document.getElementById("region-select");
+    const tariffCards = document.querySelectorAll(".tariff-card");
+    const tariffOptions = document.querySelectorAll("#tariff-select option");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const form = document.getElementById('lead-form');
+    const status = document.getElementById('lead-status');
+    const phoneInput = document.getElementById('phone');
 
-  function filterTariffs(regionId){
-    tariffCards.forEach(card => {
-      card.style.display = (!regionId || card.dataset.region === regionId) ? "block" : "none";
+    // Маска для телефона
+    phoneInput.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.startsWith('7') || value.startsWith('8')) {
+        value = value.substring(1);
+      }
+      if (value.length > 0) {
+        value = '+7 (' + value;
+        if (value.length > 7) value = value.substring(0, 7) + ') ' + value.substring(7);
+        if (value.length > 12) value = value.substring(0, 12) + '-' + value.substring(12);
+        if (value.length > 15) value = value.substring(0, 15) + '-' + value.substring(15);
+      }
+      e.target.value = value;
     });
-    tariffOptions.forEach(opt => {
-      if(opt.dataset.region){
-        opt.style.display = (!regionId || opt.dataset.region === regionId) ? "block" : "none";
+
+    // Фильтрация по региону
+    function filterTariffs(regionId, speedFilter = '') {
+      tariffCards.forEach(card => {
+        const matchesRegion = !regionId || card.dataset.region === regionId;
+        const matchesSpeed = !speedFilter || card.dataset.speed <= speedFilter;
+        card.style.display = (matchesRegion && matchesSpeed) ? "block" : "none";
+      });
+
+      tariffOptions.forEach(opt => {
+        if (opt.dataset.region) {
+          const matchesRegion = !regionId || opt.dataset.region === regionId;
+          opt.style.display = matchesRegion ? "block" : "none";
+        }
+      });
+
+      document.getElementById("region-input").value = regionSelect.value ?
+        regionSelect.selectedOptions[0].text : "";
+    }
+
+    // Фильтрация по скорости
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const speedFilter = this.dataset.speed;
+        filterTariffs(regionSelect.value, speedFilter);
+      });
+    });
+
+    regionSelect.addEventListener("change", function() {
+      const activeFilter = document.querySelector('.filter-btn.active');
+      const speedFilter = activeFilter ? activeFilter.dataset.speed : '';
+      filterTariffs(this.value, speedFilter);
+    });
+
+    // Автозаполнение тарифа при клике на кнопку
+    document.querySelectorAll('.tariff-card .btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tariffId = this.dataset.tariff;
+        document.getElementById('tariff-select').value = tariffId;
+      });
+    });
+
+    // Обработка формы
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      // Валидация
+      const fio = document.getElementById('fio').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const tariff = document.getElementById('tariff-select').value;
+
+      if (!fio || !phone || !address || !tariff) {
+        showStatus('Заполните все обязательные поля', 'error');
+        return;
+      }
+
+      if (phone.replace(/\D/g, '').length !== 11) {
+        showStatus('Введите корректный номер телефона', 'error');
+        return;
+      }
+
+      form.classList.add('loading');
+      status.style.display = 'block';
+      status.textContent = 'Заявка отправляется…';
+
+      const formData = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Ошибка сервера');
+
+        showStatus('Спасибо! Мы свяжемся с вами в течение 15 минут.', 'success');
+        form.reset();
+        filterTariffs(regionSelect.value);
+
+      } catch (error) {
+        showStatus(error.message || 'Не удалось отправить заявку. Попробуйте позже.', 'error');
+      } finally {
+        form.classList.remove('loading');
       }
     });
-    document.getElementById("region-input").value = regionSelect.value ? regionSelect.selectedOptions[0].text : "";
-  }
 
-  regionSelect.addEventListener("change", function(){
-    filterTariffs(this.value);
-  });
+    // Вспомогательные функции
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
-  filterTariffs(regionSelect.value);
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = type === 'success' ? 'success-message' : 'error-message';
+      status.style.display = 'block';
+    }
 
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+    // Инициализация
+    filterTariffs(regionSelect.value);
+
+    // Анимации при скролле
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+          observer.unobserve(entry.target);
         }
-    }
-    return cookieValue;
-  }
-
-  const form=document.getElementById('lead-form');
-  const status=document.getElementById('lead-status');
-  form.addEventListener('submit', async e=>{
-    e.preventDefault();
-    status.style.display='block';
-    status.textContent='Заявка отправляется…';
-    const formData=Object.fromEntries(new FormData(form).entries());
-    try{
-      const res=await fetch(form.action,{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        },
-        body:JSON.stringify(formData)
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Ошибка');
-      status.style.color='#2b7a0b';
-      status.textContent='Спасибо! Мы свяжемся с вами.';
-      form.reset();
-      filterTariffs(regionSelect.value);
-    }catch(error){
-      status.style.color='#b00020';
-      status.textContent= error.message || 'Не удалось отправить заявку. Попробуйте позже.';
-    }
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
   });
 </script>
 </body>
