@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,447 +7,7 @@
   <title>RT Интернет - Высокоскоростной интернет для каждого</title>
   <meta name="description" content="Подключите высокоскоростной интернет от RT Интернет. Лучшие тарифы для дома и бизнеса.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #023e8a;
-      --secondary: #0096c7;
-      --accent: #0077b6;
-      --light: #f8f9fa;
-      --dark: #212529;
-      --success: #28a745;
-      --danger: #dc3545;
-      --border-radius: 12px;
-      --shadow: 0 6px 16px rgba(0,0,0,0.08);
-      --transition: all 0.3s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #f9fafb 0%, #e9ecef 100%);
-      color: var(--dark);
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-
-    /* Header */
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .logo i {
-      color: #00b4d8;
-    }
-
-    .region-selector {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    select {
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: var(--border-radius);
-      background: white;
-      color: var(--dark);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    select:hover {
-      transform: translateY(-1px);
-    }
-
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      color: white;
-      padding: 4rem 0;
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      animation: fadeInUp 1s ease;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      max-width: 600px;
-      margin: 0 auto;
-      animation: fadeInUp 1s ease 0.2s both;
-    }
-
-    /* Features */
-    .features {
-      padding: 3rem 0;
-      background: white;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .feature-card {
-      text-align: center;
-      padding: 2rem;
-      border-radius: var(--border-radius);
-      background: var(--light);
-      transition: var(--transition);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow);
-    }
-
-    .feature-card i {
-      font-size: 2.5rem;
-      color: var(--secondary);
-      margin-bottom: 1rem;
-    }
-
-    /* Tariffs */
-    .tariffs {
-      padding: 3rem 0;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 2rem;
-      color: var(--primary);
-    }
-
-    .filter-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.6rem 1.5rem;
-      border: 2px solid var(--secondary);
-      background: transparent;
-      color: var(--secondary);
-      border-radius: 25px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 500;
-    }
-
-    .filter-btn.active,
-    .filter-btn:hover {
-      background: var(--secondary);
-      color: white;
-    }
-
-    .tariff-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    }
-
-    .tariff-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      text-align: center;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .tariff-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    }
-
-    .popular-badge {
-      position: absolute;
-      top: 1rem;
-      right: -2rem;
-      background: var(--success);
-      color: white;
-      padding: 0.3rem 2rem;
-      transform: rotate(45deg);
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .tariff-card h3 {
-      color: var(--primary);
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .speed {
-      color: #666;
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-    }
-
-    .price {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--secondary);
-      margin: 1rem 0;
-    }
-
-    .price-period {
-      font-size: 0.9rem;
-      color: #666;
-      font-weight: normal;
-    }
-
-    .features-list {
-      list-style: none;
-      margin: 1.5rem 0;
-      text-align: left;
-    }
-
-    .features-list li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .features-list li:last-child {
-      border-bottom: none;
-    }
-
-    .features-list i {
-      color: var(--success);
-      margin-right: 0.5rem;
-    }
-
-    .btn {
-      display: inline-block;
-      background: var(--secondary);
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: var(--border-radius);
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .btn:hover {
-      background: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    /* Connect Form */
-    #connect-form {
-      padding: 4rem 0;
-      background: var(--light);
-    }
-
-    .lead-card {
-      max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 2.5rem;
-      box-shadow: var(--shadow);
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 1rem;
-      border: 2px solid #e9ecef;
-      border-radius: var(--border-radius);
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 3px rgba(0,150,199,0.1);
-    }
-
-    /* Footer */
-    footer {
-      background: var(--primary);
-      color: white;
-      padding: 2rem 0;
-      text-align: center;
-    }
-
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      text-align: left;
-    }
-
-    .footer-section h4 {
-      margin-bottom: 1rem;
-      color: #00b4d8;
-    }
-
-    .contact-info {
-      list-style: none;
-    }
-
-    .contact-info li {
-      margin-bottom: 0.5rem;
-    }
-
-    .contact-info i {
-      width: 20px;
-      margin-right: 0.5rem;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .social-links a {
-      color: white;
-      font-size: 1.2rem;
-      transition: var(--transition);
-    }
-
-    .social-links a:hover {
-      color: #00b4d8;
-    }
-
-    .copyright {
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .fade-in {
-      animation: fadeInUp 0.6s ease both;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .hero h2 {
-        font-size: 2rem;
-      }
-
-      .hero p {
-        font-size: 1rem;
-      }
-
-      .tariff-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .filter-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .filter-btn {
-        width: 200px;
-      }
-    }
-
-    /* Loading states */
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .success-message {
-      background: var(--success);
-      color: white;
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-top: 1rem;
-      text-align: center;
-    }
-
-    .error-message {
-      background: var(--danger);
-      color: white;
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-top: 1rem;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'tariffs/css/style.css' %}">
 </head>
 <body>
 <header>
@@ -458,12 +19,33 @@
       </div>
       <div class="region-selector">
         <i class="fas fa-map-marker-alt"></i>
-        <select id="region-select">
-          <option value="">Все регионы</option>
-          {% for region in regions %}
-            <option value="{{ region.id }}">{{ region.name }}</option>
-          {% endfor %}
-        </select>
+        <span class="current-region">
+          {% if current_region %}
+            {{ current_region.name }}
+          {% else %}
+            Все регионы
+          {% endif %}
+        </span>
+
+        {% if regions %}
+        <div class="region-dropdown">
+          <button class="dropdown-btn">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            {% if current_region %}
+              <a href="http://ваш-сайт.ru">Все регионы</a>
+            {% endif %}
+            {% for region in regions %}
+              {% if region.subdomain and region != current_region %}
+                <a href="http://{{ region.subdomain }}.ваш-сайт.ru">
+                  {{ region.name }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -507,6 +89,13 @@
 <section class="tariffs">
   <div class="container">
     <h2 class="section-title">Наши тарифы</h2>
+
+    {% if current_region %}
+    <div class="region-info">
+      <h3>Тарифы для {{ current_region.name }}</h3>
+      <p>Подключение доступно по всему региону</p>
+    </div>
+    {% endif %}
 
     <div class="filter-buttons">
       <button class="filter-btn active" data-speed="">Все тарифы</button>
@@ -619,162 +208,6 @@
   </div>
 </footer>
 
-<script>
-  // Полная JavaScript реализация с улучшениями
-  document.addEventListener('DOMContentLoaded', function() {
-    // Элементы DOM
-    const regionSelect = document.getElementById("region-select");
-    const tariffCards = document.querySelectorAll(".tariff-card");
-    const tariffOptions = document.querySelectorAll("#tariff-select option");
-    const filterButtons = document.querySelectorAll(".filter-btn");
-    const form = document.getElementById('lead-form');
-    const status = document.getElementById('lead-status');
-    const phoneInput = document.getElementById('phone');
-
-    // Маска для телефона
-    phoneInput.addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.startsWith('7') || value.startsWith('8')) {
-        value = value.substring(1);
-      }
-      if (value.length > 0) {
-        value = '+7 (' + value;
-        if (value.length > 7) value = value.substring(0, 7) + ') ' + value.substring(7);
-        if (value.length > 12) value = value.substring(0, 12) + '-' + value.substring(12);
-        if (value.length > 15) value = value.substring(0, 15) + '-' + value.substring(15);
-      }
-      e.target.value = value;
-    });
-
-    // Фильтрация по региону
-    function filterTariffs(regionId, speedFilter = '') {
-      tariffCards.forEach(card => {
-        const matchesRegion = !regionId || card.dataset.region === regionId;
-        const matchesSpeed = !speedFilter || card.dataset.speed <= speedFilter;
-        card.style.display = (matchesRegion && matchesSpeed) ? "block" : "none";
-      });
-
-      tariffOptions.forEach(opt => {
-        if (opt.dataset.region) {
-          const matchesRegion = !regionId || opt.dataset.region === regionId;
-          opt.style.display = matchesRegion ? "block" : "none";
-        }
-      });
-
-      document.getElementById("region-input").value = regionSelect.value ?
-        regionSelect.selectedOptions[0].text : "";
-    }
-
-    // Фильтрация по скорости
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        const speedFilter = this.dataset.speed;
-        filterTariffs(regionSelect.value, speedFilter);
-      });
-    });
-
-    regionSelect.addEventListener("change", function() {
-      const activeFilter = document.querySelector('.filter-btn.active');
-      const speedFilter = activeFilter ? activeFilter.dataset.speed : '';
-      filterTariffs(this.value, speedFilter);
-    });
-
-    // Автозаполнение тарифа при клике на кнопку
-    document.querySelectorAll('.tariff-card .btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const tariffId = this.dataset.tariff;
-        document.getElementById('tariff-select').value = tariffId;
-      });
-    });
-
-    // Обработка формы
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      // Валидация
-      const fio = document.getElementById('fio').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const tariff = document.getElementById('tariff-select').value;
-
-      if (!fio || !phone || !address || !tariff) {
-        showStatus('Заполните все обязательные поля', 'error');
-        return;
-      }
-
-      if (phone.replace(/\D/g, '').length !== 11) {
-        showStatus('Введите корректный номер телефона', 'error');
-        return;
-      }
-
-      form.classList.add('loading');
-      status.style.display = 'block';
-      status.textContent = 'Заявка отправляется…';
-
-      const formData = Object.fromEntries(new FormData(form).entries());
-
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          body: JSON.stringify(formData)
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.error || 'Ошибка сервера');
-
-        showStatus('Спасибо! Мы свяжемся с вами в течение 15 минут.', 'success');
-        form.reset();
-        filterTariffs(regionSelect.value);
-
-      } catch (error) {
-        showStatus(error.message || 'Не удалось отправить заявку. Попробуйте позже.', 'error');
-      } finally {
-        form.classList.remove('loading');
-      }
-    });
-
-    // Вспомогательные функции
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    function showStatus(message, type) {
-      status.textContent = message;
-      status.className = type === 'success' ? 'success-message' : 'error-message';
-      status.style.display = 'block';
-    }
-
-    // Инициализация
-    filterTariffs(regionSelect.value);
-
-    // Анимации при скролле
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.fade-in').forEach(el => {
-      observer.observe(el);
-    });
-  });
-</script>
+<script src="{% static 'tariffs/js/script.js' %}"></script>
 </body>
 </html>

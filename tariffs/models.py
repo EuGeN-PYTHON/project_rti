@@ -42,3 +42,31 @@ class Lead(models.Model):
     def __str__(self):
         return f"{self.fio} - {self.tariff.name}"
 
+class Region(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    subdomain = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.subdomain:
+            # Автогенерация поддомена из названия
+            self.subdomain = self.generate_subdomain()
+        super().save(*args, **kwargs)
+
+    def generate_subdomain(self):
+        """Генерация поддомена из названия региона"""
+        name = self.name.lower()
+        mapping = {
+            'москва': 'moskva',
+            'санкт-петербург': 'spb',
+            'краснодар': 'krasnodar',
+            'самара': 'samara',
+            'новосибирск': 'novosibirsk',
+            'екатеринбург': 'ekaterinburg',
+            'казань': 'kazan',
+            'нижний новгород': 'nnovgorod',
+        }
+        return mapping.get(name, name.replace(' ', '').replace('-', ''))
+
+    def __str__(self):
+        return self.name

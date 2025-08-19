@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-@i&3zn=*vv7wwb7==g-q2&(_#-1o7v_1%t1u-k2uu)n*g49cww
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.ваш-сайт.ru',  # для всех поддоменов
+    '.ваш-сайт.com', # если нужно
+]
 
 
 # Application definition
@@ -47,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'rti_project.middleware.SubdomainMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
