@@ -1,0 +1,159 @@
+<!-- tariffs/templates/index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RT Интернет</title>
+  <style>
+    body {margin:0;font-family:"Segoe UI",sans-serif;background:#f9fafb;color:#333;}
+    header {background:#023e8a;color:#fff;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+    header h1 {margin:0;font-size:1.5rem;}
+    header select {padding:0.4rem 0.6rem;border-radius:6px;border:none;font-size:1rem;}
+    section.tariffs {padding:2rem;}
+    section.tariffs h2 {text-align:center;font-size:2rem;margin-bottom:1.5rem;}
+    .tariff-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;}
+    .tariff-card {background:#fff;border-radius:16px;box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:1.5rem;text-align:center;transition:transform 0.3s;}
+    .tariff-card:hover {transform:translateY(-4px);}
+    .tariff-card h3 {margin:0 0 0.5rem;font-size:1.3rem;color:#023e8a;}
+    .tariff-card .speed {color:#555;font-size:0.95rem;}
+    .tariff-card .price {font-size:1.2rem;font-weight:600;margin:1rem 0;}
+    .tariff-card .btn {display:inline-block;background:#0096c7;color:#fff;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:500;transition:0.3s;}
+    .tariff-card .btn:hover {background:#0077b6;}
+    #connect-form {padding:2rem;background:#f1f5f9;}
+    #connect-form h2 {text-align:center;margin-bottom:1rem;}
+    .lead-card {max-width:480px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,0.12);padding:2rem;text-align:center;transition:0.3s;}
+    .lead-card:hover {transform:translateY(-4px);}
+    .lead-card svg {width:48px;height:48px;margin-bottom:1rem;fill:#0096c7;}
+    .lead-card input,.lead-card select {width:100%;padding:0.8rem;margin:0.5rem 0;border:1px solid #ccc;border-radius:8px;}
+    .lead-card button {background:#0096c7;color:#fff;border:none;padding:0.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;transition:0.3s;}
+    .lead-card button:hover {background:#0077b6;}
+    #lead-status {margin-top:1rem;font-weight:500;}
+    footer {background:#023e8a;color:#fff;padding:1rem;text-align:center;margin-top:2rem;}
+  </style>
+</head>
+<body>
+<header>
+  <h1>RT Интернет</h1>
+  <div>
+    <label for="region-select">Регион:</label>
+    <select id="region-select">
+      <option value="">Все регионы</option>
+      {% for region in regions %}
+        <option value="{{ region.id }}">{{ region.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</header>
+
+<section class="tariffs">
+  <h2>Наши тарифы</h2>
+  <div id="tariff-grid" class="tariff-grid">
+    {% for tariff in tariffs %}
+      <div class="tariff-card" data-region="{{ tariff.region.id }}">
+        <h3>{{ tariff.name }}</h3>
+        {% if tariff.speed %}<p class="speed">Скорость: {{ tariff.speed }}</p>{% endif %}
+        <p class="price">{{ tariff.price }} ₽/мес</p>
+        <a href="#connect-form" class="btn">Подключить</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="connect-form">
+  <h2>Оставить заявку</h2>
+  <div class="lead-card">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+    <form id="lead-form" action="{% url 'create_lead' %}" method="post">
+      {% csrf_token %}
+      <label for="fio">ФИО</label>
+      <input type="text" id="fio" name="fio" placeholder="Иванов Иван Иванович" required>
+      <label for="phone">Телефон</label>
+      <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+      <label for="address">Адрес подключения</label>
+      <input type="text" id="address" name="address" placeholder="Введите адрес" required>
+      <select name="tariff" id="tariff-select">
+        <option value="">Выберите тариф</option>
+        {% for tariff in tariffs %}
+          <option value="{{ tariff.id }}" data-region="{{ tariff.region.id }}">{{ tariff.name }} - {{ tariff.price }} ₽</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" name="region" id="region-input">
+      <button type="submit">Отправить заявку</button>
+      <div id="lead-status"></div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 RT Интернет</p>
+</footer>
+
+<script>
+  const regionSelect = document.getElementById("region-select");
+  const tariffCards = document.querySelectorAll(".tariff-card");
+  const tariffOptions = document.querySelectorAll("#tariff-select option");
+
+  function filterTariffs(regionId){
+    tariffCards.forEach(card => {
+      card.style.display = (!regionId || card.dataset.region === regionId) ? "block" : "none";
+    });
+    tariffOptions.forEach(opt => {
+      if(opt.dataset.region){
+        opt.style.display = (!regionId || opt.dataset.region === regionId) ? "block" : "none";
+      }
+    });
+    document.getElementById("region-input").value = regionSelect.value ? regionSelect.selectedOptions[0].text : "";
+  }
+
+  regionSelect.addEventListener("change", function(){
+    filterTariffs(this.value);
+  });
+
+  filterTariffs(regionSelect.value);
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+
+  const form=document.getElementById('lead-form');
+  const status=document.getElementById('lead-status');
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    status.style.display='block';
+    status.textContent='Заявка отправляется…';
+    const formData=Object.fromEntries(new FormData(form).entries());
+    try{
+      const res=await fetch(form.action,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body:JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      status.style.color='#2b7a0b';
+      status.textContent='Спасибо! Мы свяжемся с вами.';
+      form.reset();
+      filterTariffs(regionSelect.value);
+    }catch(error){
+      status.style.color='#b00020';
+      status.textContent= error.message || 'Не удалось отправить заявку. Попробуйте позже.';
+    }
+  });
+</script>
+</body>
+</html>
