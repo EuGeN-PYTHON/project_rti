@@ -4,18 +4,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RT Интернет - Высокоскоростной интернет для каждого</title>
-  <meta name="description" content="Подключите высокоскоростной интернет от RT Интернет. Лучшие тарифы для дома и бизнеса.">
+  <title>RT Интернет - Официальный дилер Ростелекома</title>
+  <meta name="description" content="Официальный дилер Ростелекома. Подключите высокоскоростной интернет, телевидение и мобильную связь.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{% static 'tariffs/css/style.css' %}">
+  <link rel="icon" href="{% static 'tariffs/images/logos/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
 <header>
   <div class="container">
     <div class="header-content">
       <div class="logo">
-        <i class="fas fa-wifi"></i>
-        <span>RT Интернет</span>
+        <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo rt-logo-dark">
+        <span class="site-name">RT Интернет</span>
+        <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span>
       </div>
       <div class="region-selector">
         <i class="fas fa-map-marker-alt"></i>
@@ -34,11 +36,11 @@
           </button>
           <div class="dropdown-content">
             {% if current_region %}
-              <a href="http://ваш-сайт.ru">Все регионы</a>
+              <a href="http://127.0.0.1:8000">Все регионы</a>
             {% endif %}
             {% for region in regions %}
               {% if region.subdomain and region != current_region %}
-                <a href="http://{{ region.subdomain }}.ваш-сайт.ru">
+                <a href="http://{{ region.subdomain }}.localhost:8000">
                   {{ region.name }}
                 </a>
               {% endif %}
@@ -53,14 +55,14 @@
 
 <section class="hero">
   <div class="container">
-    <h2>Высокоскоростной интернет для вашего дома</h2>
-    <p>Подключите один из наших тарифов и получите стабильный интернет с бесплатной установкой</p>
+    <h2>Высокоскоростной интернет от Ростелекома</h2>
+    <p>Официальный дилер. Подключите один из наших тарифов и получите стабильный интернет с бесплатной установкой</p>
   </div>
 </section>
 
 <section class="features">
   <div class="container">
-    <h2 class="section-title">Почему выбирают нас</h2>
+    <h2 class="section-title">Почему выбирают Ростелеком</h2>
     <div class="features-grid">
       <div class="feature-card fade-in">
         <i class="fas fa-bolt"></i>
@@ -88,7 +90,7 @@
 
 <section class="tariffs">
   <div class="container">
-    <h2 class="section-title">Наши тарифы</h2>
+    <h2 class="section-title">Тарифы Ростелекома</h2>
 
     {% if current_region %}
     <div class="region-info">
@@ -108,7 +110,12 @@
       {% for tariff in tariffs %}
         <div class="tariff-card fade-in" data-region="{{ tariff.region.id }}" data-speed="{{ tariff.speed|default:'0'|cut:'Мбит/с'|cut:' ' }}">
           {% if forloop.first %}<div class="popular-badge">ПОПУЛЯРНЫЙ</div>{% endif %}
-          <h3>{{ tariff.name }}</h3>
+
+          <div class="tariff-header">
+            <h3>{{ tariff.name }}</h3>
+            <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo-small">
+          </div>
+
           {% if tariff.speed %}<p class="speed"><i class="fas fa-tachometer-alt"></i> {{ tariff.speed }}</p>{% endif %}
           <div class="price">{{ tariff.price }} <span class="price-period">₽/мес</span></div>
 
@@ -118,6 +125,11 @@
             <li><i class="fas fa-check"></i> Аренда оборудования</li>
             <li><i class="fas fa-check"></i> Техподдержка 24/7</li>
           </ul>
+
+          <div class="tariff-notice">
+            <i class="fas fa-info-circle"></i>
+            В стоимость тарифа не включены дополнительные услуги и оборудование
+          </div>
 
           <a href="#connect-form" class="btn" data-tariff="{{ tariff.id }}">
             <i class="fas fa-plug"></i> Подключить
@@ -130,8 +142,14 @@
 
 <section id="connect-form">
   <div class="container">
-    <h2 class="section-title">Оставить заявку</h2>
+    <h2 class="section-title">Оставить заявку на подключение</h2>
     <div class="lead-card fade-in">
+      <div class="form-header">
+        <i class="fas fa-headset"></i>
+        <h3>Подключите интернет от Ростелекома</h3>
+        <p>Официальный дилер. Гарантия качества</p>
+      </div>
+
       <form id="lead-form" action="{% url 'create_lead' %}" method="post">
         {% csrf_token %}
 
@@ -178,8 +196,14 @@
   <div class="container">
     <div class="footer-content">
       <div class="footer-section">
-        <h4>RT Интернет</h4>
-        <p>Предоставляем качественные интернет-услуги с 2015 года. Более 50 000 довольных клиентов по всей стране.</p>
+        <div class="footer-logo">
+          <div class="logo">
+            <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo rt-logo-dark">
+            <span class="site-name">RT Интернет</span>
+            <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span>
+          </div>
+        </div>
+        <p>Официальный дилер ПАО «Ростелеком». Предоставляем качественные интернет-услуги с 2015 года.</p>
       </div>
 
       <div class="footer-section">
@@ -202,8 +226,9 @@
       </div>
     </div>
 
-    <div class="copyright">
-      <p>© 2025 RT Интернет. Все права защищены.</p>
+    <div class="legal-info">
+      <p>© 2025 ПАО «Ростелеком». Все права защищены.</p>
+      <p>Услуги предоставляются официальными дилерами Ростелекома.</p>
     </div>
   </div>
 </footer>

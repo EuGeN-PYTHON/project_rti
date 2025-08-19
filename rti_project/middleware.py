@@ -1,5 +1,5 @@
 from django.http import Http404
-from .models import Region
+from tariffs.models import Region  # Исправленный импорт
 
 
 class SubdomainMiddleware:
@@ -21,9 +21,14 @@ class SubdomainMiddleware:
 
     def get_subdomain(self, host):
         """Извлекаем поддомен из хоста"""
+        # Для localhost разработки
         if 'localhost' in host or '127.0.0.1' in host:
-            return 'test'  # для разработки
+            parts = host.split('.')
+            if len(parts) >= 2 and parts[0] != '127':
+                return parts[0].lower()
+            return None  # Основной localhost без поддомена
 
+        # Для production
         parts = host.split('.')
         if len(parts) >= 3:
             return parts[0].lower()

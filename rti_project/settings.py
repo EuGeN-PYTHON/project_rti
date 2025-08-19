@@ -28,8 +28,19 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '.ваш-сайт.ru',  # для всех поддоменов
-    '.ваш-сайт.com', # если нужно
+    '.localhost',  # Все поддомены localhost
+    'moskva.localhost',
+    'spb.localhost',
+    'krasnodar.localhost',
+    'samara.localhost',
+    'novosibirsk.localhost',
+    'ekaterinburg.localhost',
+    'kazan.localhost',
+    'nnovgorod.localhost',
+    'test.localhost',
+    # Добавьте ваши production домены позже
+    # '.ваш-сайт.ru',
+    # '.ваш-сайт.com',
 ]
 
 
@@ -52,8 +63,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'rti_project.middleware.SubdomainMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rti_project.middleware.SubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'rti_project.urls'
