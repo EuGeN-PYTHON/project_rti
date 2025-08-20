@@ -113,10 +113,6 @@ header {
     width: auto;
 }
 
-.rt-logo-dark {
-    filter: brightness(0) invert(1);
-}
-
 .site-name {
     font-weight: 600;
     font-size: 1.2rem;
@@ -135,7 +131,7 @@ header {
     letter-spacing: 0.5px;
 }
 
-/* Region Selector - FIXED DROPDOWN */
+/* Region Selector */
 .region-selector {
     display: flex;
     align-items: center;
@@ -679,6 +675,25 @@ footer {
     opacity: 0.8;
     font-weight: 300;
     text-transform: uppercase;
+}
+
+/* No tariffs message */
+.no-tariffs {
+    text-align: center;
+    padding: 3rem;
+    color: var(--rt-black);
+    grid-column: 1 / -1;
+}
+
+.no-tariffs i {
+    font-size: 3rem;
+    color: var(--rt-purple);
+    margin-bottom: 1rem;
+}
+
+.no-tariffs p {
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* Animations */

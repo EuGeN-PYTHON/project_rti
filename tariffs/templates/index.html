@@ -15,9 +15,10 @@
   <div class="container">
     <div class="header-content">
       <div class="logo">
-        <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo rt-logo-dark">
+        <!-- ФИОЛЕТОВЫЙ логотип для темного фона -->
+        <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo">
         <span class="site-name">RT Интернет</span>
-        <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span>
+        <!-- <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span> -->
       </div>
       <div class="region-selector">
         <i class="fas fa-map-marker-alt"></i>
@@ -115,7 +116,8 @@
 
           <div class="tariff-header">
             <h3>{{ tariff.name }}</h3>
-            <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo-small">
+            <!-- БЕЛЫЙ логотип для светлого фона -->
+            <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo-small">
           </div>
 
           {% if tariff.speed %}<p class="speed"><i class="fas fa-tachometer-alt"></i> {{ tariff.speed }}</p>{% endif %}
@@ -200,16 +202,17 @@
       <div class="footer-section">
         <div class="footer-logo">
           <div class="logo">
-            <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo rt-logo-dark">
-            <span class="site-name">RT Интернет</span>
-            <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span>
+            <!-- ФИОЛЕТОВЫЙ логотип для темного фона -->
+            <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo">
+            <!--<span class="site-name">RT Интернет</span>
+             <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span> -->
           </div>
         </div>
         <p>Официальный дилер ПАО «Ростелеком». Предоставляем качественные интернет-услуги с 2015 года.</p>
       </div>
 
       <div class="footer-section">
-        <h4>Контакты</h4>
+        <h4>Контактактивация</h4>
         <ul class="contact-info">
           <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
           <li><i class="fas fa-envelope"></i> info@rt-internet.ru</li>
