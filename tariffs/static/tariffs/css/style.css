@@ -118,20 +118,7 @@ header {
     font-size: 1.2rem;
 }
 
-.dealer-badge {
-    background: var(--rt-orange);
-    color: var(--rt-white);
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-block;
-    margin-left: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Region Selector */
+/* Region Selector - FIXED DROPDOWN */
 .region-selector {
     display: flex;
     align-items: center;
@@ -151,6 +138,18 @@ header {
     z-index: 1002;
 }
 
+/* Невидимый мост для плавного перехода */
+.region-dropdown::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+    left: 0;
+    height: 20px;
+    background: transparent;
+    z-index: 1004;
+}
+
 .dropdown-btn {
     background: none;
     border: none;
@@ -165,21 +164,21 @@ header {
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     right: 0;
     background: var(--rt-white);
     min-width: 220px;
     box-shadow: var(--shadow);
     border-radius: var(--border-radius);
     z-index: 1003;
-    margin-top: 0.5rem;
     opacity: 0;
     transform: translateY(-10px);
     transition: all 0.3s ease;
     pointer-events: none;
 }
 
-.region-dropdown:hover .dropdown-content {
+/* Показываем dropdown при hover на всем region-selector */
+.region-selector:hover .dropdown-content {
     display: block;
     opacity: 1;
     transform: translateY(0);
@@ -599,18 +598,6 @@ footer {
     font-size: 1.1rem;
 }
 
-.footer-logo .dealer-badge {
-    background: var(--rt-orange);
-    color: var(--rt-white);
-    padding: 0.3rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    display: inline-block;
-    margin-left: 0.5rem;
-    text-transform: uppercase;
-}
-
 .footer-section h4 {
     margin-bottom: 1rem;
     color: var(--rt-orange);
@@ -723,7 +710,7 @@ footer {
     animation: fadeInUp 0.6s ease both;
 }
 
-.region-dropdown:hover .dropdown-content {
+.region-selector:hover .dropdown-content {
     animation: dropdownFadeIn 0.3s ease forwards;
 }
 
@@ -789,6 +776,7 @@ footer {
     .dropdown-content {
         right: auto;
         left: 0;
+        min-width: 200px;
     }
 
     .price {
@@ -829,10 +817,6 @@ footer {
         margin-bottom: 0.5rem;
     }
 
-    .footer-logo .dealer-badge {
-        margin-left: 0;
-    }
-
     .contact-info {
         text-align: center;
     }
@@ -843,6 +827,11 @@ footer {
 
     .social-links {
         justify-content: center;
+    }
+
+    /* Убираем невидимый мост на мобильных */
+    .region-dropdown::before {
+        display: none;
     }
 }
 
