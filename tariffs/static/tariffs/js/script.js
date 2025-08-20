@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         dropdownContent.addEventListener('mouseenter', function() {
-            clearTimeout(dropdownTimeout);
+            clearTimeout(ddropdownTimeout);
         });
 
         dropdownContent.addEventListener('mouseleave', function() {

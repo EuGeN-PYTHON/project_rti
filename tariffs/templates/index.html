@@ -36,13 +36,13 @@
           </button>
           <div class="dropdown-content">
             {% if current_region %}
-              <a href="http://127.0.0.1:8000" class="dropdown-item">
+              <a href="http://localhost:8000" class="dropdown-item">
                 <i class="fas fa-globe"></i> Все регионы
               </a>
             {% endif %}
             {% for region in regions %}
               {% if region.subdomain and region != current_region %}
-                <a href="http://127.0.0.1:8000?region={{ region.id }}" class="dropdown-item">
+                <a href="http://{{ region.subdomain }}.localhost:8000" class="dropdown-item">
                   <i class="fas fa-city"></i> {{ region.name }}
                 </a>
               {% endif %}
@@ -176,13 +176,13 @@
             <option value="">Выберите тариф</option>
             {% for tariff in tariffs %}
               <option value="{{ tariff.id }}" data-region="{{ tariff.region.id }}">
-                {{ tariff.name }} - {{ tariff.speed }} - {{ tariff.price }} ₽/мес
+                {{ tariff.name }} - {{ tariff.speed|default:"Скорость не указана" }} - {{ tariff.price }} ₽/мес
               </option>
             {% endfor %}
           </select>
         </div>
 
-        <input type="hidden" name="region" id="region-input">
+        <input type="hidden" name="region" id="region-input" value="{% if current_region %}{{ current_region.name }}{% endif %}">
 
         <button type="submit" class="btn">
           <i class="fas fa-paper-plane"></i> Отправить заявку
