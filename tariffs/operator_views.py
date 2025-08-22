@@ -1,11 +1,18 @@
+import logging
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from .models import Lead, Tariff, Region
 from .telegram_bot import send_lead_to_telegram
-from django.http import JsonResponse
+
+# Логгер
+logger = logging.getLogger(__name__)
+
+# Добавляем логгер
+logger = logging.getLogger(__name__)
 
 
 def is_operator(user):
@@ -53,10 +60,11 @@ def take_lead(request, lead_id):
         'status_choices': Lead.STATUS_CHOICES
     })
 
+
 @login_required
 @user_passes_test(is_operator)
 def update_lead(request, lead_id):
-    """Обновление заявки оператором"""
+    """Обновление заявки оператором с подробным логированием"""
     lead = get_object_or_404(Lead, id=lead_id, operator=request.user)
 
     if request.method == 'POST':
@@ -64,56 +72,80 @@ def update_lead(request, lead_id):
         installation_date = request.POST.get('installation_date')
         notes = request.POST.get('notes')
         tariff_id = request.POST.get('tariff')
-        stay_on_page = request.POST.get('stay_on_page')
+
+        logger.info(f"📝 Обновление заявки #{lead.id} оператором {request.user.username}")
+        logger.info(f"   Новый статус: {new_status}")
+        logger.info(f"   Дата монтажа: {installation_date}")
 
         # Обновляем тариф если выбран новый
         if tariff_id:
             try:
                 new_tariff = Tariff.objects.get(id=tariff_id)
                 lead.tariff = new_tariff
+                logger.info(f"   Тариф изменен на: {new_tariff.name}")
             except Tariff.DoesNotExist:
-                pass
+                logger.warning(f"   Попытка установить несуществующий тариф: {tariff_id}")
+                messages.error(request, 'Выбран несуществующий тариф')
 
         # Обновляем статус
         if new_status in dict(Lead.STATUS_CHOICES):
+            old_status = lead.status
             lead.status = new_status
 
-            # Обновляем дату монтажа
+            # Обновляем дату монтажа (может быть пустой)
             if installation_date:
                 try:
                     lead.installation_date = timezone.datetime.strptime(installation_date, '%Y-%m-%dT%H:%M')
-                except:
-                    pass
+                    logger.info(f"   Дата монтажа установлена: {lead.installation_date}")
+                except ValueError:
+                    logger.error("   Неверный формат даты монтажа")
+                    messages.error(request, 'Неверный формат даты')
+            else:
+                # Если дата очищена - устанавливаем None
+                lead.installation_date = None
+                logger.info("   Дата монтажа очищена")
 
             # Обновляем примечания
             if notes:
                 lead.notes = notes
+                logger.info("   Примечания обновлены")
 
             lead.updated_at = timezone.now()
             lead.save()
 
-            # Если статус "Передано провайдеру" - отправляем в Telegram
-            if new_status == 'transferred' and lead.installation_date:
-                send_lead_to_telegram(lead)
+            logger.info(f"✅ Заявка #{lead.id} обновлена. Статус: {old_status} → {new_status}")
 
-            # Если AJAX запрос (остаться на странице)
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or stay_on_page:
-                return JsonResponse({'success': True, 'message': 'Изменения сохранены'})
+            # Если статус изменился на "Передано провайдеру"
+            if new_status == 'transferred' and old_status != 'transferred':
+                logger.info("🔄 Статус изменен на 'Передано провайдеру'")
 
-            messages.success(request, 'Заявка обновлена')
+                # ОТПРАВЛЯЕМ В TELEGRAM ДАЖЕ БЕЗ ДАТЫ МОНТАЖА
+                logger.info("📋 Попытка отправки в Telegram...")
+                telegram_success = send_lead_to_telegram(lead)
+
+                if telegram_success:
+                    messages.success(request, '✅ Заявка передана провайдеру и отправлена в Telegram!')
+                    logger.info("✅ Уведомление об отправке в Telegram показано пользователю")
+                else:
+                    messages.warning(request,
+                                     '⚠️ Заявка передана провайдеру, но не отправлена в Telegram. Проверьте настройки.')
+                    logger.warning("⚠️ Показано предупреждение о проблеме с Telegram")
+
+            else:
+                messages.success(request, '✅ Изменения сохранены')
+                logger.info("✅ Обычное уведомление об сохранении показано")
+
             return redirect('operator_dashboard')
+        else:
+            logger.error(f"❌ Неверный статус: {new_status}")
+            messages.error(request, '❌ Неверный статус заявки')
 
-    # Если AJAX запрос с ошибкой
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({'success': False, 'error': 'Ошибка при сохранении'})
-
-    tariffs = Tariff.objects.filter(region__name=lead.region)
+    tariffs = Tariff.objects.all()
     return render(request, 'operator/edit_lead.html', {
         'lead': lead,
         'tariffs': tariffs,
         'status_choices': Lead.STATUS_CHOICES
     })
-
 
 @login_required
 @user_passes_test(is_operator)
@@ -127,7 +159,7 @@ def view_lead(request, lead_id):
 @user_passes_test(is_operator)
 def search_leads(request):
     """Поиск заявок - ТОЛЬКО новые"""
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()
 
     if query:
         leads = Lead.objects.filter(
@@ -135,7 +167,7 @@ def search_leads(request):
             Q(phone__icontains=query) |
             Q(address__icontains=query) |
             Q(notes__icontains=query),
-            status='new'
+            status='new'  # Только новые заявки
         ).order_by('-created_at')
     else:
         leads = Lead.objects.none()

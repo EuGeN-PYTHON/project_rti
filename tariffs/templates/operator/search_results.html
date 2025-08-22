@@ -1,0 +1,123 @@
+{% extends 'operator/base_operator.html' %}
+
+{% block content %}
+<div class="search-results">
+    <h2>🔍 Результаты поиска</h2>
+
+    <div style="margin-bottom: 25px;">
+        <a href="{% url 'operator_dashboard' %}" class="btn btn-secondary">← Назад к списку заявок</a>
+    </div>
+
+    <div class="search-section">
+        <form method="get" action="{% url 'search_leads' %}">
+            <input type="text" name="q" placeholder="Поиск по ФИО, телефону или адресу..." value="{{ query }}" style="padding: 12px; width: 300px;">
+            <button type="submit" class="btn btn-primary">🔍 Искать</button>
+        </form>
+    </div>
+
+    {% if query %}
+        <div class="results-info">
+            <p>Найдено заявок: <strong>{{ leads.count }}</strong></p>
+            <p>По запросу: <strong>"{{ query }}"</strong></p>
+        </div>
+
+        {% if leads %}
+            <div class="leads-section">
+                {% for lead in leads %}
+                    <div class="lead-card">
+                        <p><strong>👤 {{ lead.fio }}</strong></p>
+                        <p>📞 {{ lead.phone }}</p>
+                        <p>🏠 {{ lead.address }}</p>
+                        <p>📍 Регион: {{ lead.region }}</p>
+                        <p>💫 Тариф: {{ lead.tariff.name }} - {{ lead.tariff.price }} ₽/мес</p>
+                        <p>📊 Статус: <span style="color:
+                            {% if lead.status == 'new' %}var(--rt-purple)
+                            {% elif lead.status == 'repeated' %}var(--rt-orange)
+                            {% elif lead.status == 'transferred' %}var(--rt-green)
+                            {% else %}#666{% endif %}; font-weight: 600;">
+                            {{ lead.get_status_display }}
+                        </span></p>
+                        <p>⏰ Создана: {{ lead.created_at|date:"d.m.Y H:i" }}</p>
+
+                        <div class="actions">
+                            {% if lead.status == 'new' %}
+                                <a href="{% url 'take_lead' lead.id %}" class="btn btn-success">
+                                    ✏️ Взять в работу
+                                </a>
+                            {% else %}
+                                <a href="{% url 'view_lead' lead.id %}" class="btn btn-secondary">
+                                    👁️ Просмотр
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <p>😔 По запросу "{{ query }}" ничего не найдено</p>
+                <p>Попробуйте изменить поисковый запрос</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-query">
+            <p>🔍 Введите поисковый запрос в поле выше</p>
+            <p>Поиск выполняется по: ФИО, телефону, адресу и примечаниям</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.search-results {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.search-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--rt-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.results-info {
+    background: var(--rt-cool-grey);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.no-results, .no-query {
+    text-align: center;
+    padding: 40px;
+    background: var(--rt-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    color: var(--rt-black);
+    opacity: 0.8;
+}
+
+.lead-card {
+    background: var(--rt-white);
+    border: 2px solid var(--rt-lavender);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 15px 0;
+    transition: all 0.3s ease;
+}
+
+.lead-card:hover {
+    border-color: var(--rt-purple);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock %}

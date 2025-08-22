@@ -122,13 +122,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'  # Можно оставить 'en-us' или изменить на русский
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True  # Важно оставить True для корректной работы с часовыми поясами
 
 
 # Static files (CSS, JavaScript, Images)
@@ -142,10 +142,38 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Telegram Bot Settings
-TELEGRAM_BOT_TOKEN = 'your_bot_token_here'
-TELEGRAM_CHAT_ID = 'your_chat_id_here'
+TELEGRAM_BOT_TOKEN = '8486438334:AAFb70OvcAch0FsS1mx0bUvYl1frX6yo1-I'
+TELEGRAM_CHAT_ID = '-4624403927'
 
 # Настройки аутентификации
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/operator/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Добавьте в конец settings.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+LANGUAGES = [
+    ('ru', 'Russian'),
+]
+
+# Форматы даты и времени
+DATE_FORMAT = 'd.m.Y'
+TIME_FORMAT = 'H:i'
+DATETIME_FORMAT = 'd.m.Y H:i'
