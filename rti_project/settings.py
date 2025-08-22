@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'rti_project.middleware.SubdomainMiddleware',
+    'rti_project.middleware.OperatorAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'rti_project.urls'
@@ -139,3 +140,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Telegram Bot Settings
+TELEGRAM_BOT_TOKEN = 'your_bot_token_here'
+TELEGRAM_CHAT_ID = 'your_chat_id_here'
+
+# Настройки аутентификации
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/operator/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

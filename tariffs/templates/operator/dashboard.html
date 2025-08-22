@@ -1,0 +1,41 @@
+{% extends 'operator/base_operator.html' %}
+
+{% block content %}
+<h2>📋 Новые заявки на подключение</h2>
+
+<div class="search-section">
+    <form method="get" action="{% url 'search_leads' %}">
+        <input type="text" name="q" placeholder="Поиск по ФИО, телефону или адресу..." value="{{ query }}">
+        <button type="submit">🔍 Найти</button>
+    </form>
+</div>
+
+<div class="leads-section">
+    <h3>Новые заявки ({{ new_leads.count }})</h3>
+
+    {% for lead in new_leads %}
+        <div class="lead-card">
+            <p><strong>👤 {{ lead.fio }}</strong></p>
+            <p>📞 {{ lead.phone }}</p>
+            <p>🏠 {{ lead.address }}</p>
+            <p>📍 Регион: {{ lead.region }}</p>
+            <p>💫 Тариф: {{ lead.tariff.name }} - {{ lead.tariff.price }} ₽/мес</p>
+            <p>⏰ Создана: {{ lead.created_at|date:"d.m.Y H:i" }}</p>
+
+            <div class="actions">
+                <a href="{% url 'take_lead' lead.id %}" class="btn btn-success">
+                    ✏️ Взять в работу и редактировать
+                </a>
+                <a href="{% url 'view_lead' lead.id %}" class="btn btn-secondary">
+                    👁️ Только просмотр
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-leads">
+            <p>🎉 Отлично! Нет новых заявок.</p>
+            <p>Все заявки обработаны.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

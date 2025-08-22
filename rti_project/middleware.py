@@ -1,5 +1,7 @@
 from django.http import Http404
-from tariffs.models import Region  # Исправленный импорт
+from django.shortcuts import redirect  # Добавляем импорт
+from django.urls import reverse
+from tariffs.models import Region
 
 
 class SubdomainMiddleware:
@@ -66,3 +68,21 @@ class SubdomainMiddleware:
         }
 
         return mapping.get(subdomain, subdomain.capitalize())
+
+
+class OperatorAuthMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Проверяем, пытается ли пользователь получить доступ к операторской панели
+        if request.path.startswith('/operator/') and not request.user.is_authenticated:
+            return redirect(f'{reverse("login")}?next={request.path}')
+
+        # Проверяем, аутентифицирован ли пользователь и является ли оператором
+        if request.path.startswith('/operator/') and request.user.is_authenticated:
+            if not (request.user.groups.filter(name='Operators').exists() or request.user.is_staff):
+                return redirect('/admin/')  # Перенаправляем в админку если не оператор
+
+        response = self.get_response(request)
+        return response

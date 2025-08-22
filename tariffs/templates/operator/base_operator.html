@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель оператора - RT Интернет</title>
+    <style>
+        :root {
+            --rt-purple: #7700FF;
+            --rt-orange: #FF4F12;
+            --rt-black: #101828;
+            --rt-white: #FFFFFF;
+            --rt-light-blue: #7499D6;
+            --rt-lavender: #E8D2ED;
+            --rt-cool-grey: #E3E8EC;
+            --primary: var(--rt-purple);
+            --secondary: var(--rt-orange);
+            --accent: var(--rt-light-blue);
+            --text-dark: var(--rt-black);
+            --text-light: var(--rt-white);
+            --background: var(--rt-white);
+            --border-radius: 12px;
+            --shadow: 0 6px 16px rgba(119, 0, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Rostelecom Basis', Arial, sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #e9ecef 100%);
+            margin: 0;
+            padding: 0;
+            color: var(--rt-black);
+        }
+        .header {
+            background: var(--rt-purple);
+            color: var(--rt-white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .operator-dashboard {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .leads-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: var(--rt-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--rt-lavender);
+        }
+        .lead-card {
+            border: 2px solid var(--rt-lavender);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: var(--border-radius);
+            background: var(--rt-white);
+            transition: all 0.3s ease;
+        }
+        .lead-card:hover {
+            border-color: var(--rt-purple);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .btn {
+            padding: 12px 20px;
+            margin: 8px 8px 8px 0;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Rostelecom Basis', Arial, sans-serif;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: var(--rt-purple);
+            color: var(--rt-white);
+        }
+        .btn-primary:hover {
+            background: #5a00cc;
+        }
+        .btn-secondary {
+            background: var(--rt-light-blue);
+            color: var(--rt-white);
+        }
+        .btn-secondary:hover {
+            background: #5a7bbd;
+        }
+        .btn-success {
+            background: var(--rt-orange);
+            color: var(--rt-white);
+        }
+        .btn-success:hover {
+            background: #e5450f;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: var(--rt-white);
+        }
+        .no-leads {
+            color: var(--rt-black);
+            opacity: 0.7;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: var(--rt-cool-grey);
+            border-radius: var(--border-radius);
+        }
+        .search-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--rt-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--rt-lavender);
+        }
+        .search-section input {
+            padding: 12px;
+            border: 2px solid var(--rt-lavender);
+            border-radius: var(--border-radius);
+            width: 300px;
+            font-family: 'Rostelecom Basis', Arial, sans-serif;
+        }
+        .search-section input:focus {
+            outline: none;
+            border-color: var(--rt-purple);
+        }
+        .search-section button {
+            padding: 12px 24px;
+            background: var(--rt-purple);
+            color: var(--rt-white);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Rostelecom Basis', Arial, sans-serif;
+            font-weight: 600;
+        }
+        .search-section button:hover {
+            background: #5a00cc;
+        }
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        h1, h2, h3, h4 {
+            color: var(--rt-purple);
+            font-weight: 700;
+        }
+        .lead-info {
+            background: var(--rt-cool-grey);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--rt-purple);
+        }
+        .lead-info p {
+            margin: 8px 0;
+            font-weight: 500;
+        }
+        .lead-info strong {
+            color: var(--rt-purple);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RT Интернет - Панель оператора</h1>
+        <div>
+            <span>Оператор: {{ user.username }}</span> |
+            <a href="{% url 'logout' %}" style="color: var(--rt-white); text-decoration: none; font-weight: 600;">Выйти</a>
+        </div>
+    </div>
+
+    <div class="operator-dashboard">
+        {% block content %}
+        {% endblock %}
+    </div>
+<script>
+// Простая функция подтверждения изменений
+function confirmSave(fieldName) {
+    return confirm(`Изменить ${fieldName}? Изменения будут сохранены.`);
+}
+
+// Обработчики для полей формы
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('leadForm');
+    if (form) {
+        // Автосохранение при изменении важных полей
+        const autoSaveFields = form.querySelectorAll('select[name="tariff"], select[name="status"]');
+
+        autoSaveFields.forEach(field => {
+            field.addEventListener('change', function() {
+                const fieldName = this.name === 'tariff' ? 'тариф' : 'статус';
+                if (confirm(`Сохранить изменение ${fieldName}?`)) {
+                    form.submit();
+                }
+            });
+        });
+    }
+});
+</script>
+</body>
+</html>

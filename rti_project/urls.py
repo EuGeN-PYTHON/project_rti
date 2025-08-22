@@ -16,10 +16,15 @@ Including another URLconf
 
 from django.urls import path, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from tariffs.views import region_redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tariffs.urls')),
     path('switch-region/', region_redirect, name='switch_region'),
+
+    # Добавляем URL для аутентификации
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='operator/login.html'), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
