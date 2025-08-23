@@ -22,13 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         regionDropdown.addEventListener('mouseleave', function() {
+            // Увеличиваем таймаут перед закрытием
             dropdownTimeout = setTimeout(() => {
                 dropdownContent.style.opacity = '0';
                 dropdownContent.style.transform = 'translateY(-10px)';
                 setTimeout(() => {
                     dropdownContent.style.display = 'none';
                 }, 300);
-            }, 300);
+            }, 800); // Увеличено с 300ms до 800ms
         });
 
         dropdownContent.addEventListener('mouseenter', function() {
@@ -36,11 +37,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         dropdownContent.addEventListener('mouseleave', function() {
-            dropdownContent.style.opacity = '0';
-            dropdownContent.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                dropdownContent.style.display = 'none';
-            }, 300);
+            // Увеличиваем таймаут и здесь
+            dropdownTimeout = setTimeout(() => {
+                dropdownContent.style.opacity = '0';
+                dropdownContent.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    dropdownContent.style.display = 'none';
+                }, 300);
+            }, 800); // Увеличено с 300ms до 800ms
+        });
+
+        // Закрытие при клике вне dropdown
+        document.addEventListener('click', function(event) {
+            if (!regionDropdown.contains(event.target) && !dropdownContent.contains(event.target)) {
+                dropdownContent.style.opacity = '0';
+                dropdownContent.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    dropdownContent.style.display = 'none';
+                }, 300);
+            }
         });
     }
 

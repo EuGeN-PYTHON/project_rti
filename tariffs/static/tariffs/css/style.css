@@ -1254,3 +1254,103 @@ footer {
     text-align: right;
     margin-top: auto; /* Прижимаем к низу */
 }
+
+/* Улучшения для dropdown */
+.region-dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1002;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background: var(--rt-white);
+    min-width: 220px;
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    z-index: 1003;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    /* Добавляем небольшую задержку перед исчезновением */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.region-selector:hover .dropdown-content,
+.dropdown-content:hover {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Увеличиваем область клика для dropdown */
+.region-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    color: var(--rt-white);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.region-selector:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Улучшаем внешний вид пунктов меню */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.2rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    font-weight: 400;
+}
+
+.dropdown-item:hover {
+    background: var(--rt-lavender);
+    color: var(--rt-purple);
+    transform: translateX(5px);
+    padding-left: 1.5rem;
+}
+
+.dropdown-item i {
+    width: 16px;
+    color: var(--rt-purple);
+    transition: transform 0.2s ease;
+}
+
+.dropdown-item:hover i {
+    transform: scale(1.2);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Анимация появления */
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.region-selector:hover .dropdown-content {
+    animation: dropdownFadeIn 0.3s ease forwards;
+}
