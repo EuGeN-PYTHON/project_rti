@@ -69,41 +69,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-function filterByPackage(filterType) {
-    const rtCarouselItems = document.querySelectorAll('.rt-carousel-item');
+    function filterByPackage(filterType) {
+        const rtCarouselItems = document.querySelectorAll('.rt-carousel-item');
 
-    let visibleCount = 0;
-    rtCarouselItems.forEach(item => {
-        const hasTV = item.querySelector('.Basic_channel_packages.enabled') !== null;
-        const hasCinema = item.querySelector('.ONLINE_CINEMA.enabled') !== null;
-        const hasMobile = item.querySelector('.SIM-card_main.enabled') !== null;
+        let visibleCount = 0;
+        rtCarouselItems.forEach(item => {
+            const hasTV = item.querySelector('.Basic_channel_packages.enabled') !== null;
+            const hasCinema = item.querySelector('.ONLINE_CINEMA.enabled') !== null;
+            const hasMobile = item.querySelector('.SIM-card_main.enabled') !== null;
 
-        let matchesFilter = false;
+            let matchesFilter = false;
 
-        switch(filterType) {
-            case 'all':
-                matchesFilter = true;
-                break;
-            case 'tv_cinema':
-                matchesFilter = hasTV && hasCinema;
-                break;
-            case 'mobile':
-                matchesFilter = hasMobile;
-                break;
-            case 'all_services':
-                matchesFilter = hasTV && hasCinema && hasMobile;
-                break;
-            default:
-                matchesFilter = true;
-        }
+            switch(filterType) {
+                case 'all':
+                    matchesFilter = true;
+                    break;
+                case 'tv_cinema':
+                    matchesFilter = hasTV && hasCinema;
+                    break;
+                case 'mobile':
+                    matchesFilter = hasMobile;
+                    break;
+                case 'all_services':
+                    matchesFilter = hasTV && hasCinema && hasMobile;
+                    break;
+                default:
+                    matchesFilter = true;
+            }
 
-        item.style.display = matchesFilter ? "block" : "none";
-        if (matchesFilter) visibleCount++;
-    });
+            item.style.display = matchesFilter ? "block" : "none";
+            if (matchesFilter) visibleCount++;
+        });
 
-    // Переинициализируем карусель после фильтрации
-    setTimeout(initCarousel, 100);
-}
+        // Переинициализируем карусель после фильтрации
+        setTimeout(initCarousel, 100);
+    }
 
     // Обработка кнопок подключения
     document.querySelectorAll('.rt-button-orange').forEach(btn => {
@@ -167,9 +167,34 @@ function filterByPackage(filterType) {
         }
     }
 
-    // Инициализация
+    // FAQ Accordion functionality
+    function initFAQ() {
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        if (faqItems.length === 0) return; // Если элементов нет, выходим
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+
+            question.addEventListener('click', () => {
+                // Закрываем все открытые вопросы
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+
+                // Переключаем текущий вопрос
+                item.classList.toggle('active');
+            });
+        });
+    }
+
+    // Инициализация всех компонентов
     setupDropdown();
     initCarousel();
+    initFAQ();
+    filterByPackage('all'); // Инициализация фильтров
 
     // Анимации при скролле
     const observerOptions = {
@@ -186,8 +211,8 @@ function filterByPackage(filterType) {
         });
     }, observerOptions);
 
-    // Наблюдаем за элементами для анимации
-    document.querySelectorAll('.feature-card, .rt-tariff-card, .lead-card').forEach(el => {
+    // Наблюдаем за элементами для анимации (добавлен .faq-item)
+    document.querySelectorAll('.feature-card, .rt-tariff-card, .lead-card, .faq-item').forEach(el => {
         observer.observe(el);
     });
 });
