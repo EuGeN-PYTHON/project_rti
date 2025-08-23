@@ -9,16 +9,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{% static 'tariffs/css/style.css' %}">
   <link rel="icon" href="{% static 'tariffs/images/logos/favicon.ico' %}" type="image/x-icon">
+
 </head>
 <body>
 <header>
   <div class="container">
     <div class="header-content">
       <div class="logo">
-        <!-- ФИОЛЕТОВЫЙ логотип для темного фона -->
         <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo">
-        <span class="site-name">RT Интернет</span>
-        <!-- <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span> -->
+        <!-- <span class="site-name">RT Интернет</span> -->
       </div>
       <div class="region-selector">
         <i class="fas fa-map-marker-alt"></i>
@@ -109,38 +108,155 @@
       <button class="filter-btn" data-speed="500">Выше 500 Мбит/с</button>
     </div>
 
-    <div id="tariff-grid" class="tariff-grid">
-      {% for tariff in tariffs %}
-        <div class="tariff-card fade-in" data-region="{{ tariff.region.id }}" data-speed="{{ tariff.speed|default:'0'|cut:'Мбит/с'|cut:' ' }}">
-          {% if forloop.first %}<div class="popular-badge">ПОПУЛЯРНЫЙ</div>{% endif %}
+    <!-- Карусель тарифов -->
+    <div class="rt-carousel-container">
+      <div class="rt-carousel-wrapper">
+        <div id="rt-tariff-carousel" class="rt-carousel">
+          {% for tariff in tariffs %}
+          {% with speed_value=tariff.speed|default:"0"|cut:"Мбит/с"|cut:" "|cut:"Мбит" %}
+          <div class="rt-carousel-item" data-speed="{{ speed_value }}">
+            <div class="rt-tariff-card">
+              <div class="rt-tariff">
+                <div class="card-title">{{ tariff.name }}</div>
 
-          <div class="tariff-header">
-            <h3>{{ tariff.name }}</h3>
-            <!-- БЕЛЫЙ логотип для светлого фона -->
-            <img src="{% static 'tariffs/images/logos/logo-white.svg' %}" alt="Ростелеком" class="rt-logo-small">
+                <div class="rt-tariff__offers">
+                  <!-- Интернет -->
+                  <div class="rt-tariff__offer">
+                    <div class="enabled Main_Internet_service">
+                      <div class="rt-tariff-option">
+                        <i class="rt-tariff-option__icon">
+                          <svg class="rt-sys-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M15.04 19.94a8.507 8.507 0 005.427-7.19h-3.48c-.11 2.928-.848 5.505-1.947 7.19zM12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM8.96 4.06a8.507 8.507 0 00-5.427 7.19h3.48c.11-2.928.848-5.505 1.947-7.19zm-.445 7.19c.09-2.266.587-4.243 1.291-5.65.825-1.65 1.688-2.1 2.194-2.1.507 0 1.369.45 2.194 2.1.704 1.407 1.2 3.384 1.291 5.65h-6.97zm0 1.5c.09 2.266.587 4.243 1.291 5.65.825 1.65 1.688 2.1 2.194 2.1.507 0 1.369-.45 2.194-2.1.704-1.407 1.2-3.384 1.291-5.65h-6.97zm-1.501 0c.108 2.928.847 5.505 1.946 7.19a8.507 8.507 0 01-5.427-7.19h3.48zm9.972-1.5c-.108-2.928-.847-5.505-1.946-7.19a8.507 8.507 0 015.427 7.19h-3.48z" clip-rule="evenodd"></path>
+                          </svg>
+                        </i>
+                        <div class="rt-tariff-option__info">
+                          <div class="rt-tariff-option__title"><span>{{ tariff.speed }}</span></div>
+                          <div class="d-flex align-center">
+                            <div class="rt-tariff-option__desc">Безлимитный интернет</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ТВ -->
+                  <div class="rt-tariff__offer">
+                    <div class="{% if tariff.interactive_tv %}enabled{% else %}disabled{% endif %} Basic_channel_packages">
+                      <div class="rt-tariff-option {% if not tariff.interactive_tv %}is--disabled{% endif %}">
+                        <i class="rt-tariff-option__icon">
+                          <svg class="rt-sys-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M5 4.5h14A1.5 1.5 0 0120.5 6v9a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 15V6A1.5 1.5 0 015 4.5zM2 6a3 3 0 013-3h14a3 3 0 013 3v9a3 3 0 01-3 3h-6.25v1.5H16V21H8v-1.5h3.25V18H5a3 3 0 01-3-3V6zm7.278 2.498h1.995v-.896H6.198v.896h1.977V14h1.103V8.498zm6.79-.896l-1.626 5.005-1.608-5.005h-1.218L13.91 14h1.077l2.303-6.398h-1.222z" clip-rule="evenodd"></path>
+                          </svg>
+                        </i>
+                        <div class="rt-tariff-option__info">
+                          <div class="rt-tariff-option__title">
+                            <span>{% if tariff.interactive_tv %}223 канала{% else %}Не включено{% endif %}</span>
+                          </div>
+                          <div class="d-flex align-center">
+                            <div class="rt-tariff-option__desc">Интерактивное ТВ Wink</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Кинотеатр -->
+                  <div class="rt-tariff__offer">
+                    <div class="{% if tariff.online_cinema %}enabled{% else %}disabled{% endif %} ONLINE_CINEMA">
+                      <div class="rt-tariff-option {% if not tariff.online_cinema %}is--disabled{% endif %}">
+                        <i class="rt-tariff-option__icon">
+                          <svg class="rt-sys-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M11.477 12l-1.025 1.049-3.553 3.632 3.312 3.389 7.89-8.07-7.89-8.07L6.9 7.317l3.553 3.634 1.025 1.05zM9.38 12l-4.236 4.332a.5.5 0 000 .699l4.711 4.819a.5.5 0 00.715 0l9.289-9.5a.5.5 0 000-.7l-9.289-9.5a.5.5 0 00-.715 0L5.143 6.968a.5.5 0 000 .699L9.378 12z" clip-rule="evenodd"></path>
+                          </svg>
+                        </i>
+                        <div class="rt-tariff-option__info">
+                          <div class="rt-tariff-option__title">
+                            <span>{% if tariff.online_cinema %}27 000 фильмов и сериалов{% else %}Не включено{% endif %}</span>
+                          </div>
+                          <div class="d-flex align-center wink-desc">
+                            <div class="rt-tariff-option__desc">Онлайн-кинотеатр Wink</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Мобильная связь -->
+                  <div class="rt-tariff__offer">
+                    <div class="enabled SIM-card_main">
+                      <div class="rt-tariff-option">
+                        <i class="rt-tariff-option__icon">
+                          <svg class="rt-sys-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M9 4.5h6A1.5 1.5 0 0116.5 6v12a1.5 1.5 0 01-1.5 1.5H9A1.5 1.5 0 017.5 18V6A1.5 1.5 0 019 4.5zM6 6a3 3 0 013-3h6a3 3 0 013 3v12a3 3 0 01-3 3H9a3 3 0 01-3-3V6zm8 10.5h-4V18h4v-1.5z" clip-rule="evenodd"></path>
+                          </svg>
+                        </i>
+                        <div class="rt-tariff-option__info">
+                          <div class="rt-tariff-option__title">
+                            <span>
+                              <span class="d-inline-block">{{ tariff.mobile_data }}&nbsp;Гб</span>/
+                              <span class="d-inline-block">{{ tariff.mobile_minutes }}&nbsp;мин</span>/
+                              <span class="d-inline-block">{{ tariff.mobile_sms }}&nbsp;СМС</span>
+                            </span>
+                          </div>
+                          <div class="d-flex align-center">
+                            <div class="rt-tariff-option__desc">Мобильная связь</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rt-tariff__line"></div>
+
+                <div class="rt-tariff-footer">
+                  <div class="price-comp">
+                    <div class="rt-price-v3">
+                      <div class="rt-price-v3__val">{{ tariff.price }}</div>
+                      <div class="rt-price-v3__details">
+                        <div class="rt-price-v3__currency">₽</div>
+                        <div class="rt-price-v3__sep">/</div>
+                        <div class="rt-price-v3__timeinterval">мес</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="rt-button rt-button-orange" data-tariff="{{ tariff.id }}">
+                    Подключить
+                  </button>
+
+                  <div class="card-details">
+                    <a class="card-details__link">Настроить тариф</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-shadow"></div>
+              <div class="card-bg"></div>
+            </div>
           </div>
-
-          {% if tariff.speed %}<p class="speed"><i class="fas fa-tachometer-alt"></i> {{ tariff.speed }}</p>{% endif %}
-          <div class="price">{{ tariff.price }} <span class="price-period">₽/мес</span></div>
-
-          <ul class="features-list">
-            <li><i class="fas fa-check"></i> Безлимитный интернет</li>
-            <li><i class="fas fa-check"></i> Бесплатное подключение</li>
-            <li><i class="fas fa-check"></i> Аренда оборудования</li>
-            <li><i class="fas fa-check"></i> Техподдержка 24/7</li>
-          </ul>
-
-          <div class="tariff-notice">
-            <i class="fas fa-info-circle"></i>
-            В стоимость тарифа не включены дополнительные услуги и оборудование
-          </div>
-
-          <a href="#connect-form" class="btn" data-tariff="{{ tariff.id }}">
-            <i class="fas fa-plug"></i> Подключить
-          </a>
+          {% endwith %}
+          {% endfor %}
         </div>
-      {% endfor %}
+      </div>
+
+      <!-- Навигация карусели -->
+      <div class="rt-carousel-nav">
+        <button class="rt-carousel-prev" aria-label="Предыдущие тарифы">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="rt-carousel-dots"></div>
+
+        <button class="rt-carousel-next" aria-label="Следующие тарифы">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -202,10 +318,7 @@
       <div class="footer-section">
         <div class="footer-logo">
           <div class="logo">
-            <!-- ФИОЛЕТОВЫЙ логотип для темного фона -->
             <img src="{% static 'tariffs/images/logos/logo-purple.svg' %}" alt="Ростелеком" class="rt-logo">
-            <!--<span class="site-name">RT Интернет</span>
-             <span class="dealer-badge">ОФИЦИАЛЬНЫЙ ДИЛЕР</span> -->
           </div>
         </div>
         <p>Официальный дилер ПАО «Ростелеком». Предоставляем качественные интернет-услуги с 2015 года.</p>
@@ -239,5 +352,194 @@
 </footer>
 
 <script src="{% static 'tariffs/js/script.js' %}"></script>
+<script>
+// Исправленная функция инициализации карусели
+function initCarousel() {
+    const carousel = document.getElementById('rt-tariff-carousel');
+    if (!carousel) return;
+
+    const items = carousel.querySelectorAll('.rt-carousel-item');
+    const prevBtn = document.querySelector('.rt-carousel-prev');
+    const nextBtn = document.querySelector('.rt-carousel-next');
+    const dotsContainer = document.querySelector('.rt-carousel-dots');
+    const wrapper = document.querySelector('.rt-carousel-wrapper');
+
+    if (items.length === 0) return;
+
+    let currentIndex = 0;
+    let itemsPerView = 3;
+    let totalSlides = Math.ceil(items.length / itemsPerView);
+    let isAnimating = false;
+
+    // Определяем количество видимых элементов
+    function updateItemsPerView() {
+        if (window.innerWidth < 768) {
+            itemsPerView = 1;
+        } else if (window.innerWidth < 1200) {
+            itemsPerView = 2;
+        } else {
+            itemsPerView = 3;
+        }
+        totalSlides = Math.ceil(items.length / itemsPerView);
+
+        // Сбрасываем позицию карусели
+        currentIndex = 0;
+        updateCarousel();
+        createDots();
+        updateButtons();
+    }
+
+    // Создаем точки навигации
+    function createDots() {
+        if (!dotsContainer) return;
+
+        dotsContainer.innerHTML = '';
+
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'rt-carousel-dot';
+            dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    // Обновляем активную точку
+    function updateDots() {
+        const dots = dotsContainer.querySelectorAll('.rt-carousel-dot');
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+    }
+
+    // Обновляем состояние кнопок
+    function updateButtons() {
+        if (!prevBtn || !nextBtn) return;
+
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === totalSlides - 1;
+
+        if (prevBtn.disabled) {
+            prevBtn.setAttribute('disabled', 'true');
+            prevBtn.setAttribute('aria-disabled', 'true');
+        } else {
+            prevBtn.removeAttribute('disabled');
+            prevBtn.setAttribute('aria-disabled', 'false');
+        }
+
+        if (nextBtn.disabled) {
+            nextBtn.setAttribute('disabled', 'true');
+            nextBtn.setAttribute('aria-disabled', 'true');
+        } else {
+            nextBtn.removeAttribute('disabled');
+            nextBtn.setAttribute('aria-disabled', 'false');
+        }
+    }
+
+    // Перемещаем карусель
+    function updateCarousel() {
+        if (isAnimating) return;
+
+        isAnimating = true;
+
+        // Рассчитываем правильное смещение
+        const itemWidth = items[0].offsetWidth + 20; // width + margin
+        const wrapperWidth = wrapper.offsetWidth;
+        const contentWidth = items.length * itemWidth;
+        const maxOffset = Math.max(0, contentWidth - wrapperWidth);
+        const translateX = Math.min(maxOffset, -currentIndex * itemsPerView * itemWidth);
+
+        carousel.style.transition = 'transform 0.4s ease';
+        carousel.style.transform = `translateX(${translateX}px)`;
+
+        updateDots();
+        updateButtons();
+
+        // Сбрасываем флаг анимации после завершения
+        setTimeout(() => {
+            isAnimating = false;
+        }, 400);
+    }
+
+    // Переход к слайду
+    function goToSlide(index) {
+        if (isAnimating) return;
+
+        currentIndex = Math.max(0, Math.min(index, totalSlides - 1));
+        updateCarousel();
+    }
+
+    // Следующий слайд
+    function nextSlide() {
+        if (currentIndex < totalSlides - 1 && !isAnimating) {
+            currentIndex++;
+            updateCarousel();
+        }
+    }
+
+    // Предыдущий слайд
+    function prevSlide() {
+        if (currentIndex > 0 && !isAnimating) {
+            currentIndex--;
+            updateCarousel();
+        }
+    }
+
+    // Инициализация
+    updateItemsPerView();
+
+    // Обработчики событий
+    if (prevBtn) {
+        prevBtn.addEventListener('click', prevSlide);
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextSlide);
+    }
+
+    // Ресайз с debounce
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            updateItemsPerView();
+        }, 250);
+    });
+
+    // Swipe для мобильных
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    wrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].clientX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        if (isAnimating) return;
+
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+    }
+}
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    initCarousel();
+});
+</script>
 </body>
 </html>

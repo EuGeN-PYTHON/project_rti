@@ -1,8 +1,7 @@
 @font-face {
     font-family: 'Rostelecom Basis';
     src: url('../fonts/RostelecomBasis-Bold.woff2') format('woff2'),
-         url('../fonts/RostelecomBasis-Bold.woff') format('woff'),
-         url('../fonts/RostelecomBasis-Bold.otf') format('opentype');
+         url('../fonts/RostelecomBasis-Bold.woff') format('woff');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -11,8 +10,7 @@
 @font-face {
     font-family: 'Rostelecom Basis';
     src: url('../fonts/RostelecomBasis-Medium.woff2') format('woff2'),
-         url('../fonts/RostelecomBasis-Medium.woff') format('woff'),
-         url('../fonts/RostelecomBasis-Medium.otf') format('opentype');
+         url('../fonts/RostelecomBasis-Medium.woff') format('woff');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
@@ -21,25 +19,13 @@
 @font-face {
     font-family: 'Rostelecom Basis';
     src: url('../fonts/RostelecomBasis-Regular.woff2') format('woff2'),
-         url('../fonts/RostelecomBasis-Regular.woff') format('woff'),
-         url('../fonts/RostelecomBasis-Regular.otf') format('opentype');
+         url('../fonts/RostelecomBasis-Regular.woff') format('woff');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
-@font-face {
-    font-family: 'Rostelecom Basis';
-    src: url('../fonts/RostelecomBasis-Light.woff2') format('woff2'),
-         url('../fonts/RostelecomBasis-Light.woff') format('woff'),
-         url('../fonts/RostelecomBasis-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
-    /* Цветовая палитра Ростелекома */
     --rt-purple: #7700FF;
     --rt-orange: #FF4F12;
     --rt-black: #101828;
@@ -47,11 +33,8 @@
     --rt-light-blue: #7499D6;
     --rt-lavender: #E8D2ED;
     --rt-cool-grey: #E3E8EC;
-
-    /* Соотношения цветов */
     --primary: var(--rt-purple);
     --secondary: var(--rt-orange);
-    --accent: var(--rt-light-blue);
     --text-dark: var(--rt-black);
     --text-light: var(--rt-white);
     --background: var(--rt-white);
@@ -113,12 +96,7 @@ header {
     width: auto;
 }
 
-.site-name {
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-/* Region Selector - FIXED DROPDOWN */
+/* Region Selector */
 .region-selector {
     display: flex;
     align-items: center;
@@ -136,18 +114,6 @@ header {
     position: relative;
     display: inline-block;
     z-index: 1002;
-}
-
-/* Невидимый мост для плавного перехода */
-.region-dropdown::before {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    right: 0;
-    left: 0;
-    height: 20px;
-    background: transparent;
-    z-index: 1004;
 }
 
 .dropdown-btn {
@@ -177,7 +143,6 @@ header {
     pointer-events: none;
 }
 
-/* Показываем dropdown при hover на всем region-selector */
 .region-selector:hover .dropdown-content {
     display: block;
     opacity: 1;
@@ -347,144 +312,326 @@ header {
     color: var(--rt-white);
 }
 
-.tariff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+/* Карусель тарифов - исправленная версия */
+.rt-carousel-container {
+    position: relative;
+    margin: 2rem auto;
+    padding: 0 50px;
+    max-width: 1200px;
+    overflow: hidden;
 }
 
-.tariff-card {
+.rt-carousel-wrapper {
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.rt-carousel {
+    display: flex;
+    transition: transform 0.4s ease;
+    will-change: transform;
+    padding: 10px 0;
+}
+
+.rt-carousel-item {
+    flex: 0 0 calc(33.333% - 20px);
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    min-width: 0;
+}
+
+.rt-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.rt-carousel-prev,
+.rt-carousel-next {
+    background: var(--rt-white);
+    border: 2px solid var(--rt-purple);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--rt-purple);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rt-carousel-prev {
+    left: 5px;
+}
+
+.rt-carousel-next {
+    right: 5px;
+}
+
+.rt-carousel-prev:hover,
+.rt-carousel-next:hover {
+    background: var(--rt-purple);
+    color: var(--rt-white);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.rt-carousel-prev:disabled,
+.rt-carousel-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%);
+}
+
+.rt-carousel-prev:disabled:hover,
+.rt-carousel-next:disabled:hover {
+    background: var(--rt-white);
+    color: var(--rt-purple);
+}
+
+.rt-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+}
+
+.rt-carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--rt-lavender);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rt-carousel-dot.active {
+    background: var(--rt-purple);
+    transform: scale(1.2);
+}
+
+/* Стили для карточек тарифов */
+.rt-tariff-card {
     background: var(--rt-white);
     border-radius: var(--border-radius);
-    padding: 2rem;
-    text-align: center;
+    padding: 1.5rem;
     box-shadow: var(--shadow);
     transition: var(--transition);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid var(--rt-lavender);
+    transform: translateZ(0);
 }
 
-.tariff-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(119, 0, 255, 0.15);
+.rt-tariff-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(119, 0, 255, 0.2);
     border-color: var(--rt-purple);
+    z-index: 10;
 }
 
-.popular-badge {
-    position: absolute;
-    top: 1rem;
-    right: -2rem;
-    background: var(--rt-orange);
-    color: var(--rt-white);
-    padding: 0.3rem 2rem;
-    transform: rotate(45deg);
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.tariff-header {
+.rt-tariff {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.tariff-header h3 {
-    color: var(--rt-purple);
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+.card-title {
+    font-size: 1.3rem;
     font-weight: 700;
-    text-align: left;
+    color: var(--rt-purple);
+    margin-bottom: 0.5rem;
+    min-height: 36px;
+    line-height: 1.3;
+}
+
+.rt-tariff__offers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.rt-tariff__offer {
+    display: flex;
+    align-items: center;
+}
+
+.rt-tariff-option {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    padding: 0.5rem 0;
+}
+
+.rt-tariff-option__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--rt-purple);
+}
+
+.rt-tariff-option__icon svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.rt-tariff-option__info {
     flex: 1;
 }
 
-.rt-logo-small {
-    height: 20px;
-    width: auto;
-    opacity: 0.8;
-}
-
-.speed {
-    color: var(--rt-black);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+.rt-tariff-option__title {
     font-weight: 600;
+    color: var(--rt-black);
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
 }
 
-.price {
-    font-size: 2.5rem;
+.rt-tariff-option__title span {
+    display: inline-block;
+}
+
+.rt-tariff-option__desc {
+    font-size: 0.85rem;
+    color: var(--rt-black);
+    opacity: 0.8;
+    line-height: 1.3;
+}
+
+.is--disabled .rt-tariff-option__title,
+.is--disabled .rt-tariff-option__desc {
+    color: #999;
+    opacity: 0.7;
+}
+
+.is--disabled .rt-tariff-option__icon {
+    color: #ccc;
+}
+
+.rt-tariff__line {
+    height: 1px;
+    background: var(--rt-lavender);
+    margin: 1rem 0;
+}
+
+.rt-tariff-footer {
+    text-align: right;
+}
+
+.price-comp {
+    margin-bottom: 1rem;
+}
+
+.rt-price-v3 {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.2rem;
+}
+
+.rt-price-v3__val {
+    font-size: 2rem;
     font-weight: 700;
     color: var(--rt-orange);
-    margin: 1rem 0;
-    letter-spacing: -1px;
+    line-height: 1;
 }
 
-.price-period {
-    font-size: 0.9rem;
-    color: var(--rt-black);
-    font-weight: 400;
-}
-
-.features-list {
-    list-style: none;
-    margin: 1.5rem 0;
-    text-align: left;
-}
-
-.features-list li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--rt-lavender);
+.rt-price-v3__details {
     display: flex;
     align-items: center;
-    font-weight: 400;
+    gap: 0.2rem;
+    font-size: 1rem;
+    color: var(--rt-black);
+    font-weight: 500;
 }
 
-.features-list li:last-child {
-    border-bottom: none;
-}
-
-.features-list i {
-    color: var(--rt-purple);
-    margin-right: 0.5rem;
-    width: 16px;
-}
-
-.tariff-notice {
-    background: var(--rt-lavender);
-    border-left: 4px solid var(--rt-orange);
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    text-align: left;
-    font-weight: 400;
-}
-
-.tariff-notice i {
-    color: var(--rt-orange);
-    margin-right: 0.5rem;
-}
-
-.btn {
-    display: inline-block;
+.rt-button {
     background: var(--rt-orange);
     color: var(--rt-white);
+    border: none;
     padding: 1rem 2rem;
     border-radius: var(--border-radius);
-    text-decoration: none;
     font-weight: 600;
-    transition: var(--transition);
-    border: none;
     cursor: pointer;
+    transition: var(--transition);
     width: 100%;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    font-size: 0.9rem;
 }
 
-.btn:hover {
+.rt-button:hover {
     background: #e5450f;
     transform: translateY(-2px);
+}
+
+.card-details {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.card-details__link {
+    color: var(--rt-purple);
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.card-details__link:hover {
+    text-decoration: underline;
+    color: var(--rt-orange);
+}
+
+.card-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--border-radius);
+    box-shadow: rgb(243, 243, 244) 0px 0px 0px 2px inset;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--rt-white);
+    border-radius: var(--border-radius);
+    z-index: -1;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-center {
+    align-items: center;
 }
 
 /* Connect Form */
@@ -557,6 +704,27 @@ header {
     box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
 }
 
+.btn {
+    display: inline-block;
+    background: var(--rt-orange);
+    color: var(--rt-white);
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background: #e5450f;
+    transform: translateY(-2px);
+}
+
 /* Footer */
 footer {
     background: var(--rt-purple);
@@ -591,11 +759,6 @@ footer {
 .footer-logo .rt-logo {
     height: 28px;
     width: auto;
-}
-
-.footer-logo .site-name {
-    font-weight: 600;
-    font-size: 1.1rem;
 }
 
 .footer-section h4 {
@@ -664,26 +827,7 @@ footer {
     text-transform: uppercase;
 }
 
-/* No tariffs message */
-.no-tariffs {
-    text-align: center;
-    padding: 3rem;
-    color: var(--rt-black);
-    grid-column: 1 / -1;
-}
-
-.no-tariffs i {
-    font-size: 3rem;
-    color: var(--rt-purple);
-    margin-bottom: 1rem;
-}
-
-.no-tariffs p {
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-/* Animations */
+/* Анимации */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -695,31 +839,11 @@ footer {
     }
 }
 
-@keyframes dropdownFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .fade-in {
     animation: fadeInUp 0.6s ease both;
 }
 
-.region-selector:hover .dropdown-content {
-    animation: dropdownFadeIn 0.3s ease forwards;
-}
-
-/* Loading states */
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
+/* Сообщения статуса */
 .success-message {
     background: #28a745;
     color: var(--rt-white);
@@ -760,10 +884,6 @@ footer {
         font-size: 1rem;
     }
 
-    .tariff-grid {
-        grid-template-columns: 1fr;
-    }
-
     .filter-buttons {
         flex-direction: column;
         align-items: center;
@@ -779,18 +899,8 @@ footer {
         min-width: 200px;
     }
 
-    .price {
-        font-size: 2rem;
-    }
-
-    .tariff-header {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-    }
-
-    .rt-logo-small {
-        align-self: center;
+    .rt-price-v3__val {
+        font-size: 1.8rem;
     }
 
     .section-title {
@@ -811,12 +921,6 @@ footer {
         margin: 0 auto 0.5rem;
     }
 
-    .footer-logo .site-name {
-        display: block;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
     .contact-info {
         text-align: center;
     }
@@ -829,26 +933,93 @@ footer {
         justify-content: center;
     }
 
-    /* Убираем невидимый мост на мобильных */
-    .region-dropdown::before {
-        display: none;
+    /* Карусель адаптивность */
+    .rt-carousel-container {
+        padding: 0 40px;
+    }
+
+    .rt-carousel-item {
+        flex: 0 0 calc(100% - 20px);
+    }
+
+    .rt-carousel-prev,
+    .rt-carousel-next {
+        width: 35px;
+        height: 35px;
+    }
+
+    .rt-tariff-card {
+        padding: 1rem;
+    }
+
+    .rt-tariff-option {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .rt-tariff-option__title {
+        font-size: 0.9rem;
+    }
+
+    .rt-tariff-option__desc {
+        font-size: 0.8rem;
+    }
+
+    .rt-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
     }
 }
 
-/* Print styles */
-@media print {
-    .header, .footer, .btn, .filter-buttons {
-        display: none !important;
+@media (max-width: 1200px) {
+    .rt-carousel-item {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .rt-tariff-option {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 
-    body {
-        background: white !important;
-        color: black !important;
+    .rt-tariff-option__icon {
+        align-self: flex-start;
     }
 
-    .tariff-card {
-        break-inside: avoid;
-        border: 1px solid #ccc !important;
-        box-shadow: none !important;
+    .rt-price-v3__val {
+        font-size: 1.6rem;
     }
+
+    .rt-carousel-container {
+        padding: 0 30px;
+    }
+
+    .rt-carousel-item {
+        margin: 0 10px;
+        flex: 0 0 calc(100% - 20px);
+    }
+
+    .rt-carousel-prev,
+    .rt-carousel-next {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Предотвращение мерцания при анимации */
+.rt-carousel {
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.rt-tariff-card {
+    backface-visibility: hidden;
 }

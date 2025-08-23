@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Элементы DOM
-    const tariffCards = document.querySelectorAll(".tariff-card");
     const filterButtons = document.querySelectorAll(".filter-btn");
     const form = document.getElementById('lead-form');
     const status = document.getElementById('lead-status');
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Настройка dropdown
     function setupDropdown() {
         if (!regionDropdown || !dropdownContent) return;
-
         let dropdownTimeout;
 
         regionDropdown.addEventListener('mouseenter', function() {
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         dropdownContent.addEventListener('mouseenter', function() {
-            clearTimeout(ddropdownTimeout);
+            clearTimeout(dropdownTimeout);
         });
 
         dropdownContent.addEventListener('mouseleave', function() {
@@ -61,19 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = value;
     });
 
-    // Логика для поддоменов
-    function updateRegionUI() {
-        const regionName = document.querySelector('.current-region').textContent;
-
-        // Обновляем текст в форме
-        document.getElementById('region-input').value = regionName;
-
-        // Поддомен уже фильтрует тарифы на сервере, просто показываем все видимые
-        tariffCards.forEach(card => {
-            card.style.display = 'block';
-        });
-    }
-
     // Фильтрация по скорости
     filterButtons.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -85,15 +70,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function filterBySpeed(speedFilter) {
-        tariffCards.forEach(card => {
-            const cardSpeed = parseInt(card.dataset.speed) || 0;
+        const rtCarouselItems = document.querySelectorAll('.rt-carousel-item');
+
+        let visibleCount = 0;
+        rtCarouselItems.forEach(item => {
+            const cardSpeed = parseInt(item.dataset.speed) || 0;
             const matchesSpeed = !speedFilter || cardSpeed <= parseInt(speedFilter);
-            card.style.display = matchesSpeed ? "block" : "none";
+            item.style.display = matchesSpeed ? "block" : "none";
+            if (matchesSpeed) visibleCount++;
         });
+
+        // Переинициализируем карусель после фильтрации
+        setTimeout(initCarousel, 100);
     }
 
-    // Автозаполнение тарифа при клике на кнопку
-    document.querySelectorAll('.tariff-card .btn').forEach(btn => {
+    // Обработка кнопок подключения
+    document.querySelectorAll('.rt-button-orange').forEach(btn => {
         btn.addEventListener('click', function() {
             const tariffId = this.dataset.tariff;
             document.getElementById('tariff-select').value = tariffId;
@@ -116,64 +108,47 @@ document.addEventListener('DOMContentLoaded', function() {
         const tariff = document.getElementById('tariff-select').value;
 
         if (!fio || !phone || !address || !tariff) {
-            showStatus('Заполните все обязательные поля', 'error');
+            showStatus('Пожалуйста, заполните все поля', 'error');
             return;
         }
 
-        if (phone.replace(/\D/g, '').length !== 11) {
+        if (phone.replace(/\D/g, '').length < 11) {
             showStatus('Введите корректный номер телефона', 'error');
             return;
         }
 
-        form.classList.add('loading');
-        status.style.display = 'block';
-        status.textContent = 'Заявка отправляется…';
-
-        const formData = Object.fromEntries(new FormData(form).entries());
+        // Имитация отправки
+        showStatus('Отправляем заявку...', 'loading');
 
         try {
-            const res = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(formData)
-            });
+            // Здесь будет реальный запрос к API
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.error || 'Ошибка сервера');
-
-            showStatus('Спасибо! Мы свяжемся с вами в течение 15 минут.', 'success');
+            showStatus('Заявка успешно отправлена! Мы свяжемся с вами в течение 15 минут', 'success');
             form.reset();
 
         } catch (error) {
-            showStatus(error.message || 'Не удалось отправить заявку. Попробуйте позже.', 'error');
-        } finally {
-            form.classList.remove('loading');
+            showStatus('Ошибка при отправке. Попробуйте еще раз', 'error');
         }
     });
 
-    // Вспомогательные функции
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
     function showStatus(message, type) {
         status.textContent = message;
-        status.className = type === 'success' ? 'success-message' : 'error-message';
+        status.className = type === 'success' ? 'success-message' :
+                          type === 'error' ? 'error-message' :
+                          'loading-message';
         status.style.display = 'block';
 
-        // Автоскрытие успешного сообщения
-        if (type === 'success') {
+        if (type === 'success' || type === 'error') {
             setTimeout(() => {
                 status.style.display = 'none';
             }, 5000);
         }
     }
+
+    // Инициализация
+    setupDropdown();
+    initCarousel();
 
     // Анимации при скролле
     const observerOptions = {
@@ -181,20 +156,17 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
+                entry.target.classList.add('fade-in');
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    document.querySelectorAll('.fade-in').forEach(el => {
+    // Наблюдаем за элементами для анимации
+    document.querySelectorAll('.feature-card, .rt-tariff-card, .lead-card').forEach(el => {
         observer.observe(el);
     });
-
-    // Инициализация
-    setupDropdown();
-    updateRegionUI();
 });
