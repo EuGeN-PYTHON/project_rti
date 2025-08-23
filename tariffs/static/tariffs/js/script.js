@@ -77,12 +77,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const hasTV = item.querySelector('.Basic_channel_packages.enabled') !== null;
             const hasCinema = item.querySelector('.ONLINE_CINEMA.enabled') !== null;
             const hasMobile = item.querySelector('.SIM-card_main.enabled') !== null;
+            const hasInternet = item.querySelector('.Main_Internet_service.enabled') !== null;
 
             let matchesFilter = false;
 
             switch(filterType) {
                 case 'all':
                     matchesFilter = true;
+                    break;
+                case 'internet': // Только домашний интернет
+                    matchesFilter = hasInternet && !hasTV && !hasCinema && !hasMobile;
                     break;
                 case 'tv_cinema':
                     matchesFilter = hasTV && hasCinema;
@@ -188,6 +192,195 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.classList.toggle('active');
             });
         });
+    }
+
+    // Функция инициализации карусели
+    function initCarousel() {
+        const carousel = document.getElementById('rt-tariff-carousel');
+        if (!carousel) return;
+
+        const items = carousel.querySelectorAll('.rt-carousel-item');
+        const prevBtn = document.querySelector('.rt-carousel-prev');
+        const nextBtn = document.querySelector('.rt-carousel-next');
+        const dotsContainer = document.querySelector('.rt-carousel-dots');
+        const wrapper = document.querySelector('.rt-carousel-wrapper');
+
+        if (items.length === 0) return;
+
+        let currentIndex = 0;
+        let itemsPerView = 3;
+        let totalSlides = Math.ceil(items.length / itemsPerView);
+        let isAnimating = false;
+
+        // Определяем количество видимых элементов
+        function updateItemsPerView() {
+            if (window.innerWidth < 768) {
+                itemsPerView = 1;
+            } else if (window.innerWidth < 1200) {
+                itemsPerView = 2;
+            } else {
+                itemsPerView = 3;
+            }
+
+            // Учитываем только видимые элементы
+            const visibleItems = Array.from(items).filter(item =>
+                item.style.display !== 'none'
+            );
+
+            totalSlides = Math.ceil(visibleItems.length / itemsPerView);
+
+            // Сбрасываем позицию карусели
+            currentIndex = 0;
+            updateCarousel();
+            createDots();
+            updateButtons();
+        }
+
+        // Создаем точки навигации
+        function createDots() {
+            if (!dotsContainer) return;
+
+            dotsContainer.innerHTML = '';
+
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'rt-carousel-dot';
+                dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Обновляем активную точку
+        function updateDots() {
+            const dots = dotsContainer.querySelectorAll('.rt-carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        // Обновляем состояние кнопок
+        function updateButtons() {
+            if (!prevBtn || !nextBtn) return;
+
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === totalSlides - 1;
+
+            if (prevBtn.disabled) {
+                prevBtn.setAttribute('disabled', 'true');
+                prevBtn.setAttribute('aria-disabled', 'true');
+            } else {
+                prevBtn.removeAttribute('disabled');
+                prevBtn.setAttribute('aria-disabled', 'false');
+            }
+
+            if (nextBtn.disabled) {
+                nextBtn.setAttribute('disabled', 'true');
+                nextBtn.setAttribute('aria-disabled', 'true');
+            } else {
+                nextBtn.removeAttribute('disabled');
+                nextBtn.setAttribute('aria-disabled', 'false');
+            }
+        }
+
+        // Перемещаем карусель
+        function updateCarousel() {
+            if (isAnimating) return;
+
+            isAnimating = true;
+
+            // Рассчитываем правильное смещение
+            const itemWidth = items[0].offsetWidth + 20; // width + margin
+            const wrapperWidth = wrapper.offsetWidth;
+            const contentWidth = items.length * itemWidth;
+            const maxOffset = Math.max(0, contentWidth - wrapperWidth);
+            const translateX = Math.min(maxOffset, -currentIndex * itemsPerView * itemWidth);
+
+            carousel.style.transition = 'transform 0.4s ease';
+            carousel.style.transform = `translateX(${translateX}px)`;
+
+            updateDots();
+            updateButtons();
+
+            // Сбрасываем флаг анимации после завершения
+            setTimeout(() => {
+                isAnimating = false;
+            }, 400);
+        }
+
+        // Переход к слайду
+        function goToSlide(index) {
+            if (isAnimating) return;
+
+            currentIndex = Math.max(0, Math.min(index, totalSlides - 1));
+            updateCarousel();
+        }
+
+        // Следующий слайд
+        function nextSlide() {
+            if (currentIndex < totalSlides - 1 && !isAnimating) {
+                currentIndex++;
+                updateCarousel();
+            }
+        }
+
+        // Предыдущий слайд
+        function prevSlide() {
+            if (currentIndex > 0 && !isAnimating) {
+                currentIndex--;
+                updateCarousel();
+            }
+        }
+
+        // Инициализация
+        updateItemsPerView();
+
+        // Обработчики событий
+        if (prevBtn) {
+            prevBtn.addEventListener('click', prevSlide);
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', nextSlide);
+        }
+
+        // Ресайз с debounce
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                updateItemsPerView();
+            }, 250);
+        });
+
+        // Swipe для мобильных
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].clientX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            if (isAnimating) return;
+
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
     }
 
     // Инициализация всех компонентов
