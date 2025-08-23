@@ -2,11 +2,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
-from .models import Lead, Tariff, Region  # Добавляем импорт Region
+from .models import Lead, Tariff, Region
+from .telegram_bot import send_new_lead_notification  # Добавляем новый импорт
 import logging
 
 logger = logging.getLogger(__name__)
-
 
 @csrf_exempt
 @require_POST
@@ -78,6 +78,16 @@ def create_lead(request):
             )
 
             logger.info(f"✅ Заявка создана: ID {lead.id}, ФИО: {lead.fio}, Регион: {region.name}")
+
+            # Отправляем уведомление в Telegram о новой заявке
+            try:
+                telegram_success = send_new_lead_notification(lead)
+                if telegram_success:
+                    logger.info(f"✅ Уведомление о новой заявке отправлено в Telegram")
+                else:
+                    logger.warning(f"⚠️ Не удалось отправить уведомление в Telegram")
+            except Exception as telegram_error:
+                logger.error(f"❌ Ошибка при отправке в Telegram: {telegram_error}")
 
             return JsonResponse({
                 'success': True,

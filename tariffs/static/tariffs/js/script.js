@@ -142,17 +142,45 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Имитация отправки
+        // Показываем статус отправки
         showStatus('Отправляем заявку...', 'loading');
 
         try {
-            // Здесь будет реальный запрос к API
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Реальный запрос к API
+            const formData = {
+                fio: fio,
+                phone: phone,
+                address: address,
+                tariff: tariff,
+                region: document.getElementById('region-input').value
+            };
 
-            showStatus('Заявка успешно отправлена! Мы свяжемся с вами в течение 15 минут', 'success');
-            form.reset();
+            // Получаем CSRF токен
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showStatus('Заявка успешно отправлена! Мы свяжемся с вами в течение 15 минут', 'success');
+                form.reset();
+
+                // Очищаем выбор тарифа
+                document.getElementById('tariff-select').value = '';
+            } else {
+                showStatus(result.error || 'Ошибка при отправке. Попробуйте еще раз', 'error');
+            }
 
         } catch (error) {
+            console.error('Ошибка при отправке формы:', error);
             showStatus('Ошибка при отправке. Попробуйте еще раз', 'error');
         }
     });
@@ -404,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    // Наблюдаем за элементами для анимации (добавлен .faq-item)
+    // Наблюдаем за элементами для анимации
     document.querySelectorAll('.feature-card, .rt-tariff-card, .lead-card, .faq-item').forEach(el => {
         observer.observe(el);
     });
