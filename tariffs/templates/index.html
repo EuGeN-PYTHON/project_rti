@@ -69,12 +69,12 @@
       <div class="feature-card fade-in">
         <i class="fas fa-bolt"></i>
         <h3>Высокая скорость</h3>
-        <p>До 1 Гбит/с без ограничений и throttling</p>
+        <p>До 1 Гбит/с без ограничений и снижения скорости</p>
       </div>
       <div class="feature-card fade-in">
         <i class="fas fa-shield-alt"></i>
         <h3>Надежность</h3>
-        <p>99.9% uptime и круглосуточная поддержка</p>
+        <p>99,9% времени без сбоев и круглосуточная поддержка</p>
       </div>
       <div class="feature-card fade-in">
         <i class="fas fa-tools"></i>
@@ -102,11 +102,11 @@
     {% endif %}
 
     <div class="filter-buttons">
-      <button class="filter-btn active" data-speed="">Все тарифы</button>
-      <button class="filter-btn" data-speed="100">До 100 Мбит/с</button>
-      <button class="filter-btn" data-speed="300">До 300 Мбит/с</button>
-      <button class="filter-btn" data-speed="500">Выше 500 Мбит/с</button>
-    </div>
+  <button class="filter-btn active" data-filter="all">Все пакеты</button>
+  <button class="filter-btn" data-filter="tv_cinema">С ТВ и кинотеатром</button>
+  <button class="filter-btn" data-filter="mobile">С мобильной связью</button>
+  <button class="filter-btn" data-filter="all_services">Полный пакет</button>
+</div>
 
     <!-- Карусель тарифов -->
     <div class="rt-carousel-container">
@@ -114,7 +114,7 @@
         <div id="rt-tariff-carousel" class="rt-carousel">
           {% for tariff in tariffs %}
           {% with speed_value=tariff.speed|default:"0"|cut:"Мбит/с"|cut:" "|cut:"Мбит" %}
-          <div class="rt-carousel-item" data-speed="{{ speed_value }}">
+          <div class="rt-carousel-item">
             <div class="rt-tariff-card">
               <div class="rt-tariff">
                 <div class="card-title">{{ tariff.name }}</div>
@@ -225,9 +225,9 @@
                     Подключить
                   </button>
 
-                  <div class="card-details">
+                  <!-- <div class="card-details">
                     <a class="card-details__link">Настроить тариф</a>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="card-shadow"></div>

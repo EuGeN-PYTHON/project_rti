@@ -59,30 +59,51 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = value;
     });
 
-    // Фильтрация по скорости
+    // Фильтрация по пакетам услуг
     filterButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             filterButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            const speedFilter = this.dataset.speed;
-            filterBySpeed(speedFilter);
+            const filterType = this.dataset.filter;
+            filterByPackage(filterType);
         });
     });
 
-    function filterBySpeed(speedFilter) {
-        const rtCarouselItems = document.querySelectorAll('.rt-carousel-item');
+function filterByPackage(filterType) {
+    const rtCarouselItems = document.querySelectorAll('.rt-carousel-item');
 
-        let visibleCount = 0;
-        rtCarouselItems.forEach(item => {
-            const cardSpeed = parseInt(item.dataset.speed) || 0;
-            const matchesSpeed = !speedFilter || cardSpeed <= parseInt(speedFilter);
-            item.style.display = matchesSpeed ? "block" : "none";
-            if (matchesSpeed) visibleCount++;
-        });
+    let visibleCount = 0;
+    rtCarouselItems.forEach(item => {
+        const hasTV = item.querySelector('.Basic_channel_packages.enabled') !== null;
+        const hasCinema = item.querySelector('.ONLINE_CINEMA.enabled') !== null;
+        const hasMobile = item.querySelector('.SIM-card_main.enabled') !== null;
 
-        // Переинициализируем карусель после фильтрации
-        setTimeout(initCarousel, 100);
-    }
+        let matchesFilter = false;
+
+        switch(filterType) {
+            case 'all':
+                matchesFilter = true;
+                break;
+            case 'tv_cinema':
+                matchesFilter = hasTV && hasCinema;
+                break;
+            case 'mobile':
+                matchesFilter = hasMobile;
+                break;
+            case 'all_services':
+                matchesFilter = hasTV && hasCinema && hasMobile;
+                break;
+            default:
+                matchesFilter = true;
+        }
+
+        item.style.display = matchesFilter ? "block" : "none";
+        if (matchesFilter) visibleCount++;
+    });
+
+    // Переинициализируем карусель после фильтрации
+    setTimeout(initCarousel, 100);
+}
 
     // Обработка кнопок подключения
     document.querySelectorAll('.rt-button-orange').forEach(btn => {
